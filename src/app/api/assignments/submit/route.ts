@@ -11,6 +11,8 @@ const submitSchema = z.object({
   })).min(1).max(50),
 });
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   try {
     const session = await getCurrentSession();
@@ -30,11 +32,14 @@ export async function POST(request: Request) {
     });
     if (!assignment) return NextResponse.json({ success: false, message: "الواجب غير موجود." }, { status: 404 });
     if (assignment.status !== "OPEN") return NextResponse.json({ success: false, message: "هذا الواجب مغلق." }, { status: 400 });
+    if (!assignment.questions.length) return NextResponse.json({ success: false, message: "الواجب لا يحتوي على أسئلة بعد." }, { status: 400 });
 
     const submitted = new Map(answers.map((answer) => [answer.questionId, answer.selectedOption]));
+    const missing = assignment.questions.filter((question) => !submitted.has(question.id));
+    if (missing.length) return NextResponse.json({ success: false, message: `من فضلك أجب عن كل الأسئلة قبل الإرسال. المتبقي: ${missing.length}` }, { status: 400 });
     const validAnswers = assignment.questions.map((question) => ({
       questionId: question.id,
-      selectedOption: submitted.get(question.id) ?? "A",
+      selectedOption: submitted.get(question.id)!,
     }));
     const score = assignment.questions.reduce(
       (total, question) => total + (submitted.get(question.id) === question.correctAnswer ? 1 : 0),

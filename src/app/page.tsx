@@ -32,8 +32,8 @@ export default function Home() {
               K
             </div>
             <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-sky-300">Khaled</p>
-              <h1 className="text-lg font-bold tracking-wide">Al-Bahrawi</h1>
+              <p className="text-xs uppercase tracking-[0.3em] text-sky-300">Khaled Saqr</p>
+              <h1 className="text-lg font-bold tracking-wide">منصة خالد صقر</h1>
             </div>
           </div>
 
@@ -60,9 +60,9 @@ export default function Home() {
             </div>
 
             <h2 className="max-w-xl text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
-              Khaled Al-Bahrawi
+              منصة خالد صقر
               <span className="mt-3 block bg-gradient-to-r from-sky-300 via-cyan-200 to-emerald-300 bg-clip-text text-transparent">
-                Chemistry Academy
+                لتعليم الكيمياء
               </span>
             </h2>
 
@@ -214,7 +214,7 @@ export default function Home() {
       <section id="contact" className="mx-auto max-w-7xl px-5 pb-24 pt-8 sm:px-8 lg:px-10">
         <div className="rounded-[2rem] border border-sky-400/20 bg-gradient-to-r from-sky-500/15 to-cyan-500/10 p-8 text-center shadow-[0_0_60px_rgba(56,189,248,0.15)]">
           <p className="text-sm uppercase tracking-[0.35em] text-sky-300">Ready</p>
-          <h3 className="mt-4 text-3xl font-black text-white sm:text-4xl">منصة خالد البحراوي</h3>
+            <h3 className="mt-4 text-3xl font-black text-white sm:text-4xl">منصة خالد صقر التعليمية</h3>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-200">
             واجهة جاهزة، ونظام متكامل لإدارة الصفوف، المحاضرات، والواجبات داخل منصة تعليمية احترافية.
           </p>

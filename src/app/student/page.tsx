@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import BackButton from "@/components/BackButton";
 
 type LessonSummary = {
   id: string;
@@ -240,6 +241,12 @@ export default function StudentDashboard() {
     }
   }
 
+  function openAssignment(assignment: AssignmentSummary) {
+    setMessage("");
+    setAnswers({});
+    setSelectedAssignment(assignment);
+  }
+
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.14),_transparent_25%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] text-white">
@@ -260,6 +267,7 @@ export default function StudentDashboard() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <BackButton />
             <button
               onClick={() => setShowSettings(true)}
               className={`rounded-full border px-4 py-2 text-sm font-semibold ${activeTheme.soft}`}
@@ -341,7 +349,7 @@ export default function StudentDashboard() {
                         disablePictureInPicture
                         playsInline
                         muted={false}
-                        preload="auto"
+                        preload="metadata"
                         className="w-full rounded-xl border border-white/10 bg-black"
                         src={lesson.videoUrl}
                         onContextMenu={(event) => event.preventDefault()}
@@ -379,7 +387,7 @@ export default function StudentDashboard() {
                     <div className="flex items-center gap-3">
                       <button
                         type="button"
-                        onClick={() => setSelectedAssignment(item)}
+                        onClick={() => openAssignment(item)}
                         className="flex h-11 w-11 items-center justify-center rounded-full border border-sky-400/50 bg-sky-500/10 text-xl text-sky-200 shadow-lg shadow-sky-500/10 transition hover:scale-[1.02]"
                         aria-label={`فتح الواجب ${item.title}`}
                       >
@@ -392,7 +400,7 @@ export default function StudentDashboard() {
                     </div>
                     <button
                       type="button"
-                      onClick={() => setSelectedAssignment(item)}
+                      onClick={() => openAssignment(item)}
                       className={`rounded-full bg-gradient-to-r ${activeTheme.accent} px-4 py-2 text-sm font-bold text-slate-950`}
                     >
                       {item.result ? "عرض النتيجة" : "ابدأ"}

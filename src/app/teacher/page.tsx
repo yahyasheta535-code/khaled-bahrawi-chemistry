@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import BackButton from "@/components/BackButton";
 
 const classOptions = [
   { value: "THIRD_PREP", label: "الثالث الإعدادي" },
@@ -462,6 +463,7 @@ export default function TeacherDashboard() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <BackButton />
             <button
               onClick={() => setShowAttendance((current) => !current)}
               className="rounded-full border border-amber-400/30 bg-amber-500/10 px-4 py-2 text-sm font-black text-amber-100"

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import BackButton from "@/components/BackButton";
 
 type AdminDashboardData = {
   admin: { displayName: string };
@@ -95,6 +96,7 @@ export default function AdminPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <BackButton />
             <div className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-200">
               {data.admin.displayName}
             </div>

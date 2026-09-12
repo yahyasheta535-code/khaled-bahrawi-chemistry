@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import BackButton from "@/components/BackButton";
 
 const classLabels: Record<string, string> = {
   THIRD_PREP: "الثالث الإعدادي",
@@ -46,9 +47,10 @@ export default function LessonsPage() {
             <h1 className="mt-3 text-3xl font-black">إدارة المحاضرات</h1>
           </div>
 
-          <a href="/teacher" className="rounded-full bg-gradient-to-r from-sky-400 to-cyan-300 px-5 py-3 text-sm font-black text-slate-950">
-            + إنشاء محاضرة
-          </a>
+          <div className="flex flex-wrap gap-3">
+            <BackButton fallback="/teacher" />
+            <a href="/teacher" className="rounded-full bg-gradient-to-r from-sky-400 to-cyan-300 px-5 py-3 text-sm font-black text-slate-950">+ إنشاء محاضرة</a>
+          </div>
         </header>
 
         <section className="grid gap-5 md:grid-cols-4">

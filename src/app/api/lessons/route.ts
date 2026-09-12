@@ -13,6 +13,9 @@ const lessonPayloadSchema = z.object({
   expiryHours: z.coerce.number().int().min(1).max(720).optional().default(24),
 });
 
+export const runtime = "nodejs";
+export const maxDuration = 300;
+
 function formatFileSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;

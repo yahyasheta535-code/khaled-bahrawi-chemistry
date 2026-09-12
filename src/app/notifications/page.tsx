@@ -3,6 +3,7 @@ const notifications = [
   { student: "سارة محمود", status: "تأخر في الواجب", teacher: "تم إرسال تنبيه", parent: "+966500000001" },
   { student: "يوسف خالد", status: "نتيجة ممتازة", teacher: "لم يتم التنبيه", parent: "+966500000002" },
 ];
+import BackButton from "@/components/BackButton";
 
 export default function NotificationsPage() {
   return (
@@ -14,9 +15,10 @@ export default function NotificationsPage() {
             <h1 className="mt-3 text-3xl font-black">تنبيهات أولياء الأمور</h1>
           </div>
 
-          <button className="rounded-full bg-gradient-to-r from-emerald-400 to-lime-300 px-5 py-3 text-sm font-black text-slate-950">
-            + إرسال تنبيه جماعي
-          </button>
+          <div className="flex flex-wrap gap-3">
+            <BackButton fallback="/admin" />
+            <button className="rounded-full bg-gradient-to-r from-emerald-400 to-lime-300 px-5 py-3 text-sm font-black text-slate-950">+ إرسال تنبيه جماعي</button>
+          </div>
         </header>
 
         <section className="grid gap-5 md:grid-cols-3">
