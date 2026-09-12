@@ -48,7 +48,7 @@ export default function LessonsPage() {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <BackButton fallback="/teacher" />
+            <BackButton fallback="/" />
             <a href="/teacher" className="rounded-full bg-gradient-to-r from-sky-400 to-cyan-300 px-5 py-3 text-sm font-black text-slate-950">+ إنشاء محاضرة</a>
           </div>
         </header>

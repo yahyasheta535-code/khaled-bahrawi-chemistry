@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getCurrentSession } from "@/lib/session";
+import { storagePutStream } from "@/lib/storage";
 
 const lessonPayloadSchema = z.object({
   title: z.string().min(1).max(120),
@@ -127,14 +128,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: "يجب رفع ملف فيديو صحيح." }, { status: 400 });
     }
 
-    const fileBuffer = Buffer.from(await rawFile.arrayBuffer());
-
     const classLevelValue = parsed.data.classLevel;
     const lessonNumber =
       parsed.data.lessonNumber ??
       ((await prisma.lesson.count({ where: { classLevel: classLevelValue } })) + 1);
 
     const expiresAt = new Date(Date.now() + parsed.data.expiryHours * 60 * 60 * 1000);
+    const storage = await storagePutStream(
+      `lessons/${session.userId}/${Date.now()}-${rawFile.name || "lesson.mp4"}`,
+      rawFile.stream(),
+      rawFile.type || "video/mp4",
+    );
 
     const lesson = await prisma.lesson.create({
       data: {
@@ -143,8 +147,8 @@ export async function POST(request: Request) {
         classLevel: classLevelValue,
         lessonNumber,
         duration: parsed.data.duration,
-        videoUrl: "",
-        videoData: fileBuffer,
+        videoUrl: storage.url,
+        videoData: null,
         videoMimeType: rawFile.type || "video/mp4",
         fileSize: formatFileSize(rawFile.size),
         status: parsed.data.status,
@@ -153,8 +157,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const videoUrl = `/api/lessons/${lesson.id}/video`;
-    await prisma.lesson.update({ where: { id: lesson.id }, data: { videoUrl } });
+    const videoUrl = storage.url;
 
     return NextResponse.json({
       success: true,

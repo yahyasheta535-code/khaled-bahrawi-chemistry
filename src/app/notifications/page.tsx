@@ -16,7 +16,7 @@ export default function NotificationsPage() {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <BackButton fallback="/admin" />
+            <BackButton fallback="/" />
             <button className="rounded-full bg-gradient-to-r from-emerald-400 to-lime-300 px-5 py-3 text-sm font-black text-slate-950">+ إرسال تنبيه جماعي</button>
           </div>
         </header>

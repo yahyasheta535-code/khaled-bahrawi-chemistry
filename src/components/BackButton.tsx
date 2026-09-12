@@ -7,10 +7,7 @@ export default function BackButton({ fallback = "/" }: { fallback?: string }) {
   return (
     <button
       type="button"
-      onClick={() => {
-        if (window.history.length > 1) router.back();
-        else router.push(fallback);
-      }}
+      onClick={() => router.push(fallback)}
       className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-sky-400/50 hover:bg-sky-500/10"
     >
       ← رجوع

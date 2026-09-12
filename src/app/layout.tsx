@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "منصة خالد صقر | تعليم الكيمياء",
-  description: "منصة خالد صقر التعليمية للمحاضرات والواجبات ومتابعة مستوى الطلاب.",
+  title: "Khaled Al-Bahrawi | Chemistry Academy",
+  description: "منصة Khaled Al-Bahrawi لتعليم الكيمياء بالمحاضرات والواجبات والمتابعة.",
 };
 
 export const dynamic = "force-dynamic";

@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import BackButton from "@/components/BackButton";
 
 type LessonSummary = {
   id: string;
@@ -267,7 +266,6 @@ export default function StudentDashboard() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <BackButton />
             <button
               onClick={() => setShowSettings(true)}
               className={`rounded-full border px-4 py-2 text-sm font-semibold ${activeTheme.soft}`}

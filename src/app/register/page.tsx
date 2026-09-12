@@ -70,7 +70,7 @@ export default function RegisterPage() {
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.14),_transparent_30%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] p-6 text-white">
       <div className="mx-auto max-w-5xl rounded-[2rem] border border-white/10 bg-slate-950/80 p-6 shadow-[0_30px_120px_rgba(15,23,42,0.6)] md:p-8">
         <div className="mb-8">
-          <p className="text-sm uppercase tracking-[0.3em] text-sky-300">منصة خالد صقر التعليمية</p>
+          <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Khaled Al-Bahrawi Chemistry Academy</p>
           <h1 className="mt-3 text-3xl font-black">إنشاء حساب طالب</h1>
           <p className="mt-2 text-slate-300">سجّل بياناتك للانضمام إلى محاضرات الكيمياء والواجبات والمتابعة.</p>
         </div>

@@ -48,7 +48,7 @@ export default function AssignmentsPage() {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <BackButton fallback="/teacher" />
+            <BackButton fallback="/" />
             <a href="/teacher" className="rounded-full bg-gradient-to-r from-violet-400 to-fuchsia-300 px-5 py-3 text-sm font-black text-slate-950">+ إنشاء واجب جديد</a>
           </div>
         </header>
