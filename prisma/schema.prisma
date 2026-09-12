@@ -161,6 +161,7 @@ model Question {
   optionC       String
   optionD       String
   correctAnswer String
+  imageUrl      String?
   createdAt     DateTime @default(now())
 
   assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)

@@ -22,6 +22,7 @@ type StudentRow = {
   watched: string;
   status: string;
   parentPhone: string;
+  grades: { assignmentTitle: string; score: number; total: number; percentage: number; submittedAt: string }[];
 };
 
 export default function TeacherDashboard() {
@@ -84,6 +85,8 @@ export default function TeacherDashboard() {
         optionC: "",
         optionD: "",
         correctAnswer: "A",
+        imageUrl: "",
+        imageFile: null as File | null,
       },
     ],
   });
@@ -367,7 +370,7 @@ export default function TeacherDashboard() {
       ...current,
       questions: [
         ...current.questions,
-        { text: "", optionA: "", optionB: "", optionC: "", optionD: "", correctAnswer: "A" },
+        { text: "", optionA: "", optionB: "", optionC: "", optionD: "", correctAnswer: "A", imageUrl: "", imageFile: null as File | null },
       ],
     }));
   }
@@ -379,6 +382,34 @@ export default function TeacherDashboard() {
         questionIndex === index ? { ...question, [field]: value } : question
       ),
     }));
+  }
+
+  function updateQuestionImage(index: number, file: File | null) {
+    setAssignmentForm((current) => ({
+      ...current,
+      questions: current.questions.map((question, questionIndex) =>
+        questionIndex === index ? { ...question, imageFile: file } : question
+      ),
+    }));
+  }
+
+  async function uploadQuestionImage(file: File) {
+    const urlResponse = await fetch("/api/lessons/upload-url", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename: `question-${file.name}`, contentType: file.type || "image/*" }),
+    });
+    const info = await urlResponse.json();
+    if (!urlResponse.ok) throw new Error(info.message || "تعذر رفع صورة السؤال");
+    await new Promise<void>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("PUT", info.uploadUrl);
+      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+      xhr.onload = () => xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error("فشل رفع صورة السؤال"));
+      xhr.onerror = () => reject(new Error("فشل رفع صورة السؤال"));
+      xhr.send(file);
+    });
+    return info.url as string;
   }
 
   async function handleCreateAssignment(e: React.FormEvent) {
@@ -405,6 +436,15 @@ export default function TeacherDashboard() {
     }
 
     try {
+      const questions = await Promise.all(assignmentForm.questions.map(async (question) => ({
+        text: question.text,
+        optionA: question.optionA,
+        optionB: question.optionB,
+        optionC: question.optionC,
+        optionD: question.optionD,
+        correctAnswer: question.correctAnswer,
+        imageUrl: question.imageFile ? await uploadQuestionImage(question.imageFile) : question.imageUrl || null,
+      })));
       const response = await fetch("/api/assignments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -413,7 +453,7 @@ export default function TeacherDashboard() {
           description: assignmentForm.description,
           classLevel: assignmentForm.classLevel,
           status: assignmentForm.status,
-          questions: assignmentForm.questions,
+          questions,
         }),
       });
 
@@ -431,7 +471,7 @@ export default function TeacherDashboard() {
         classLevel: "THIRD_SECONDARY",
         status: "OPEN",
         questions: [
-          { text: "", optionA: "", optionB: "", optionC: "", optionD: "", correctAnswer: "A" },
+          { text: "", optionA: "", optionB: "", optionC: "", optionD: "", correctAnswer: "A", imageUrl: "", imageFile: null },
         ],
       });
       setShowAssignmentForm(false);
@@ -476,6 +516,12 @@ export default function TeacherDashboard() {
   const buildWhatsAppLink = (phone: string, studentName: string) => {
     const digits = phone.replace(/\D/g, "").replace(/^0/, "966");
     const text = `السلام عليكم ورحمة الله وبركاته، نود تنبيهكم بأن الطالب ${studentName} لم يبدأ مشاهدة المحاضرة المقررة حتى الآن. نرجو تذكيره بمتابعة المحاضرة والواجب، وشكرًا لتعاونكم مع منصة Khaled Al-Bahrawi.`;
+    return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
+  };
+  const buildResultWhatsAppLink = (student: StudentRow) => {
+    const digits = (student.parentPhone || "").replace(/\D/g, "").replace(/^0/, "966");
+    const results = student.grades.map((grade) => `${grade.assignmentTitle}: ${grade.score}/${grade.total} (${grade.percentage}%)`).join("\n");
+    const text = `السلام عليكم ورحمة الله وبركاته،\nنتيجة الطالب ${student.name} في منصة Khaled Al-Bahrawi:\n${results}\nنشكر لكم المتابعة والدعم المستمر. بالتوفيق لابنكم.`;
     return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
   };
 
@@ -596,6 +642,35 @@ export default function TeacherDashboard() {
                 )}
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
+          <div className="mb-5 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.25em] text-fuchsia-300">Grades</p>
+              <h2 className="mt-2 text-2xl font-bold">درجات الطلاب</h2>
+            </div>
+            <span className="rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-3 py-1 text-xs text-fuchsia-200">مصنف حسب الصف</span>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {classOptions.map((classOption) => {
+              const group = students.filter((student) => student.classLevel === classOption.value && student.grades.length);
+              return (
+                <div key={classOption.value} className="rounded-3xl border border-white/10 bg-white/5 p-4">
+                  <h3 className="mb-3 text-lg font-black text-white">{classOption.label}</h3>
+                  {group.length ? <div className="space-y-3">{group.map((student) => (
+                    <div key={student.id} className="rounded-2xl border border-white/10 bg-slate-900/70 p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div><p className="font-bold">{student.name}</p><p className="text-xs text-slate-400">{student.username}</p></div>
+                        <a href={buildResultWhatsAppLink(student)} target="_blank" rel="noreferrer" className="rounded-full bg-emerald-500 px-3 py-1.5 text-xs font-black text-white">إرسال النتيجة</a>
+                      </div>
+                      <div className="mt-3 space-y-1 text-sm text-slate-200">{student.grades.map((grade, index) => <div key={`${student.id}-${index}`} className="flex justify-between gap-3"><span>{grade.assignmentTitle}</span><strong className={grade.percentage >= 50 ? "text-emerald-300" : "text-rose-300"}>{grade.score}/{grade.total} ({grade.percentage}%)</strong></div>)}</div>
+                    </div>
+                  ))}</div> : <p className="text-sm text-slate-400">لا توجد نتائج مسجلة لهذا الصف.</p>}
+                </div>
+              );
+            })}
           </div>
         </section>
 
@@ -786,6 +861,17 @@ export default function TeacherDashboard() {
                         placeholder="نص السؤال"
                         className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-violet-400"
                       />
+
+                      <div className="rounded-2xl border border-dashed border-violet-400/30 bg-violet-500/5 p-3">
+                        <label className="mb-2 block text-xs font-bold text-violet-200">صورة السؤال أو الرسم التوضيحي (اختياري)</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => updateQuestionImage(index, e.target.files?.[0] ?? null)}
+                          className="w-full text-xs text-slate-300 file:mr-3 file:rounded-full file:border-0 file:bg-violet-500/20 file:px-3 file:py-1.5 file:text-violet-100"
+                        />
+                        {question.imageFile ? <p className="mt-2 text-xs text-emerald-300">تم اختيار: {question.imageFile.name}</p> : null}
+                      </div>
 
                       <div className="grid gap-3 sm:grid-cols-2">
                         <input

@@ -21,7 +21,7 @@ export async function GET() {
 
     const students = await prisma.user.findMany({
       where: { role: "STUDENT" },
-      include: { studentProfile: true, results: true, lessonViews: { include: { lesson: true }, orderBy: { lastWatchedAt: "desc" } } },
+      include: { studentProfile: true, results: { include: { assignment: true }, orderBy: { submittedAt: "desc" } }, lessonViews: { include: { lesson: true }, orderBy: { lastWatchedAt: "desc" } } },
       orderBy: { createdAt: "desc" },
     });
 
@@ -90,6 +90,13 @@ export async function GET() {
         watched: watchedValue,
         status: latestView ? "بدأ المحاضرة" : "لم يشاهد المحاضرة",
         parentPhone: student.parentPhone ?? "غير موجود",
+        grades: student.results.map((result) => ({
+          assignmentTitle: result.assignment.title,
+          score: result.score,
+          total: result.total,
+          percentage: result.percentage,
+          submittedAt: result.submittedAt.toISOString(),
+        })),
       };
     });
 

@@ -20,7 +20,7 @@ type AssignmentSummary = {
   status: string;
   questionCount: number;
   result?: { score: number; total: number; percentage: number } | null;
-  questions: { id: string; text: string; optionA: string; optionB: string; optionC: string; optionD: string }[];
+  questions: { id: string; text: string; optionA: string; optionB: string; optionC: string; optionD: string; imageUrl?: string | null }[];
 };
 
 type StudentProfile = {
@@ -474,6 +474,7 @@ export default function StudentDashboard() {
                 {selectedAssignment.questions.map((question, index) => (
                   <fieldset key={question.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
                     <legend className="px-2 font-bold text-white">{index + 1}. {question.text}</legend>
+                    {question.imageUrl ? <img src={question.imageUrl} alt="رسم توضيحي للسؤال" className="my-4 max-h-72 w-full rounded-2xl border border-white/10 object-contain bg-slate-950/60 p-2" /> : null}
                     {(["A", "B", "C", "D"] as const).map((option) => {
                       const key = `option${option}` as "optionA" | "optionB" | "optionC" | "optionD";
                       return (

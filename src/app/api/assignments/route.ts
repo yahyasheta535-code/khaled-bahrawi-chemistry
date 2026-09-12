@@ -10,6 +10,7 @@ const questionSchema = z.object({
   optionC: z.string().min(1).max(200),
   optionD: z.string().min(1).max(200),
   correctAnswer: z.enum(["A", "B", "C", "D"]),
+  imageUrl: z.string().max(500).optional().nullable(),
 });
 
 const assignmentSchema = z.object({
@@ -51,6 +52,7 @@ export async function GET() {
           optionB: question.optionB,
           optionC: question.optionC,
           optionD: question.optionD,
+          imageUrl: question.imageUrl,
           ...(session.role === "STUDENT" ? {} : { correctAnswer: question.correctAnswer }),
         })),
       })),
