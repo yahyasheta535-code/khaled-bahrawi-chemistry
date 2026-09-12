@@ -21,7 +21,7 @@ export async function GET() {
 
     const students = await prisma.user.findMany({
       where: { role: "STUDENT" },
-      include: { studentProfile: true, results: true },
+      include: { studentProfile: true, results: true, lessonViews: { include: { lesson: true }, orderBy: { lastWatchedAt: "desc" } } },
       orderBy: { createdAt: "desc" },
     });
 
@@ -75,7 +75,12 @@ export async function GET() {
         : 0;
 
       const lessonLabel = latestLesson ? `${latestLesson.title}` : "لا توجد محاضرة";
-      const watchedValue = lessons.length ? `${avgPercentage}%` : lessonLabel;
+      const latestView = student.lessonViews[0];
+      const watchedValue = latestView
+        ? `بدأ المشاهدة — ${latestView.lesson.title}`
+        : lessons.length
+          ? "لم يبدأ المشاهدة"
+          : lessonLabel;
 
       return {
         id: student.id,
@@ -83,7 +88,7 @@ export async function GET() {
         username: student.username,
         classLevel: student.classLevel ?? "غير محدد",
         watched: watchedValue,
-        status: lessons.length ? (avgPercentage >= 70 ? "شاهد المحاضرة" : "لم يشاهد المحاضرة") : "لم يشاهد المحاضرة",
+        status: latestView ? "بدأ المحاضرة" : "لم يشاهد المحاضرة",
         parentPhone: student.parentPhone ?? "غير موجود",
       };
     });

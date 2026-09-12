@@ -100,15 +100,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: "غير مسجل دخول" }, { status: 401 });
     }
 
-    const formData = await request.formData();
-    const title = String(formData.get("title") ?? "").trim();
-    const description = String(formData.get("description") ?? "").trim();
-    const classLevel = String(formData.get("classLevel") ?? "");
-    const duration = String(formData.get("duration") ?? "00:00").trim();
-    const status = String(formData.get("status") ?? "DRAFT");
-    const lessonNumberValue = formData.get("lessonNumber");
-    const expiryHoursValue = Number(formData.get("expiryHours") ?? 24);
-    const rawFile = formData.get("video");
+    const contentTypeHeader = request.headers.get("content-type") || "";
+    const isJson = contentTypeHeader.includes("application/json");
+    const payload = isJson ? await request.json() : await request.formData();
+    const getValue = (name: string) => payload instanceof FormData ? payload.get(name) : payload[name];
+    const title = String(getValue("title") ?? "").trim();
+    const description = String(getValue("description") ?? "").trim();
+    const classLevel = String(getValue("classLevel") ?? "");
+    const duration = String(getValue("duration") ?? "00:00").trim();
+    const status = String(getValue("status") ?? "DRAFT");
+    const lessonNumberValue = getValue("lessonNumber");
+    const expiryHoursValue = Number(getValue("expiryHours") ?? 24);
+    const rawFile = payload instanceof FormData ? payload.get("video") : null;
+    const uploadedVideoUrl = isJson ? String(getValue("videoUrl") || "") : "";
+    const uploadedVideoKey = isJson ? String(getValue("videoKey") || "") : "";
+    const uploadedVideoMimeType = isJson ? String(getValue("videoMimeType") || "application/octet-stream") : "";
+    const uploadedFileSize = isJson ? Number(getValue("fileSize") || 0) : 0;
 
     const parsed = lessonPayloadSchema.safeParse({
       title,
@@ -124,7 +131,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: "بيانات المحاضرة غير صحيحة." }, { status: 400 });
     }
 
-    if (!(rawFile instanceof File) || rawFile.size === 0) {
+    if (!(rawFile instanceof File) && !uploadedVideoUrl) {
       return NextResponse.json({ success: false, message: "يجب رفع ملف فيديو صحيح." }, { status: 400 });
     }
 
@@ -134,11 +141,16 @@ export async function POST(request: Request) {
       ((await prisma.lesson.count({ where: { classLevel: classLevelValue } })) + 1);
 
     const expiresAt = new Date(Date.now() + parsed.data.expiryHours * 60 * 60 * 1000);
-    const storage = await storagePutStream(
-      `lessons/${session.userId}/${Date.now()}-${rawFile.name || "lesson.mp4"}`,
-      rawFile.stream(),
-      rawFile.type || "video/mp4",
-    );
+    const storage = uploadedVideoUrl
+      ? { url: uploadedVideoUrl, key: uploadedVideoKey }
+      : await storagePutStream(
+          `lessons/${session.userId}/${Date.now()}-${(rawFile as File).name || "lesson.mp4"}`,
+          (rawFile as File).stream(),
+          (rawFile as File).type || "video/mp4",
+          (rawFile as File).size,
+        );
+    const fileSize = uploadedVideoUrl ? uploadedFileSize : (rawFile as File).size;
+    const mimeType = uploadedVideoUrl ? uploadedVideoMimeType : (rawFile as File).type || "video/mp4";
 
     const lesson = await prisma.lesson.create({
       data: {
@@ -149,8 +161,8 @@ export async function POST(request: Request) {
         duration: parsed.data.duration,
         videoUrl: storage.url,
         videoData: null,
-        videoMimeType: rawFile.type || "video/mp4",
-        fileSize: formatFileSize(rawFile.size),
+        videoMimeType: mimeType,
+        fileSize: formatFileSize(fileSize),
         status: parsed.data.status,
         expiresAt,
         teacherId: session.userId,

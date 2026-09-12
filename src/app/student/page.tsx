@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type LessonSummary = {
@@ -105,6 +105,7 @@ export default function StudentDashboard() {
   const [answers, setAnswers] = useState<Record<string, "A" | "B" | "C" | "D">>({});
   const [submittingAssignment, setSubmittingAssignment] = useState(false);
   const [message, setMessage] = useState("");
+  const startedLessons = useRef(new Set<string>());
   const [settingsForm, setSettingsForm] = useState({
     studentPhone: "",
     theme: "default",
@@ -246,6 +247,16 @@ export default function StudentDashboard() {
     setSelectedAssignment(assignment);
   }
 
+  async function markLessonStarted(lessonId: string) {
+    if (startedLessons.current.has(lessonId)) return;
+    startedLessons.current.add(lessonId);
+    try {
+      await fetch(`/api/lessons/${lessonId}/view`, { method: "POST", credentials: "same-origin" });
+    } catch {
+      startedLessons.current.delete(lessonId);
+    }
+  }
+
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.14),_transparent_25%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] text-white">
@@ -350,6 +361,7 @@ export default function StudentDashboard() {
                         preload="metadata"
                         className="w-full rounded-xl border border-white/10 bg-black"
                         src={lesson.videoUrl}
+                        onPlay={() => void markLessonStarted(lesson.id)}
                         onContextMenu={(event) => event.preventDefault()}
                       />
                     </div>

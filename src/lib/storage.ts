@@ -16,10 +16,23 @@ function withSuffix(relKey: string) {
     : `${normalized.slice(0, dot)}_${hash}${normalized.slice(dot)}`;
 }
 
+export async function storagePresignPut(relKey: string, contentType: string) {
+  const { forgeUrl, forgeKey } = getForgeConfig();
+  const key = withSuffix(relKey);
+  const presignUrl = new URL("v1/storage/presign/put", `${forgeUrl}/`);
+  presignUrl.searchParams.set("path", key);
+  const response = await fetch(presignUrl, { headers: { Authorization: `Bearer ${forgeKey}` } });
+  if (!response.ok) throw new Error(`Storage presign failed (${response.status})`);
+  const body = (await response.json()) as { url?: string };
+  if (!body.url) throw new Error("Storage returned an empty upload URL");
+  return { uploadUrl: body.url, key, url: `/manus-storage/${key}`, contentType };
+}
+
 export async function storagePutStream(
   relKey: string,
   stream: ReadableStream<Uint8Array>,
   contentType: string,
+  contentLength: number,
 ): Promise<{ key: string; url: string }> {
   const { forgeUrl, forgeKey } = getForgeConfig();
   const key = withSuffix(relKey);
@@ -38,7 +51,7 @@ export async function storagePutStream(
 
   const uploadResponse = await fetch(url, {
     method: "PUT",
-    headers: { "Content-Type": contentType },
+    headers: { "Content-Type": contentType, "Content-Length": String(contentLength) },
     body: stream,
     duplex: "half",
   } as RequestInit & { duplex: "half" });

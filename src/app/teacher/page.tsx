@@ -52,6 +52,7 @@ export default function TeacherDashboard() {
   const [showTeacherSettings, setShowTeacherSettings] = useState(false);
   const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [teacherSettingsMessage, setTeacherSettingsMessage] = useState("");
   const [teacherPasswordForm, setTeacherPasswordForm] = useState({
     currentPassword: "",
@@ -258,6 +259,7 @@ export default function TeacherDashboard() {
     }
 
     setUploading(true);
+    setUploadProgress(0);
 
     try {
       if (editingLessonId) {
@@ -289,21 +291,46 @@ export default function TeacherDashboard() {
           setLessonMessage("يجب رفع ملف فيديو للحفظ.");
           return;
         }
+        const videoFile = lessonForm.video;
 
-        const formData = new FormData();
-        formData.append("title", lessonForm.title);
-        formData.append("description", lessonForm.description || "");
-        formData.append("classLevel", lessonForm.classLevel);
-        formData.append("lessonNumber", lessonForm.lessonNumber);
-        formData.append("duration", lessonForm.duration);
-        formData.append("status", lessonForm.status);
-        formData.append("expiryHours", String(lessonForm.expiryHours || 24));
-        formData.append("video", lessonForm.video);
+        const uploadUrlResponse = await fetch("/api/lessons/upload-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ filename: videoFile.name, contentType: videoFile.type || "application/octet-stream" }),
+        });
+        const uploadInfo = await uploadUrlResponse.json();
+        if (!uploadUrlResponse.ok) throw new Error(uploadInfo.message || "تعذر تجهيز رفع الفيديو");
+
+        await new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("PUT", uploadInfo.uploadUrl);
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) setUploadProgress(Math.min(99, Math.round((event.loaded / event.total) * 95)));
+          };
+          xhr.setRequestHeader("Content-Type", videoFile.type || "application/octet-stream");
+          xhr.onload = () => xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error(`Storage upload failed (${xhr.status})`));
+          xhr.onerror = () => reject(new Error("Storage upload failed"));
+          xhr.send(videoFile);
+        });
 
         const response = await fetch("/api/lessons", {
           method: "POST",
-          body: formData,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: lessonForm.title,
+            description: lessonForm.description || "",
+            classLevel: lessonForm.classLevel,
+            lessonNumber: Number(lessonForm.lessonNumber || 1),
+            duration: lessonForm.duration,
+            status: lessonForm.status,
+            expiryHours: Number(lessonForm.expiryHours || 24),
+            videoUrl: uploadInfo.url,
+            videoKey: uploadInfo.key,
+            videoMimeType: videoFile.type || "application/octet-stream",
+            fileSize: videoFile.size,
+          }),
         });
+        setUploadProgress(100);
 
         const data = await response.json();
 
@@ -448,7 +475,7 @@ export default function TeacherDashboard() {
 
   const buildWhatsAppLink = (phone: string, studentName: string) => {
     const digits = phone.replace(/\D/g, "").replace(/^0/, "966");
-    const text = `السلام عليكم، نود تنبيهكم أن الطالب ${studentName} لم يشاهد المحاضرة خلال 24 ساعة. يرجى متابعة الطالب والتواصل معنا عند الحاجة. شكرًا.`;
+    const text = `السلام عليكم ورحمة الله وبركاته، نود تنبيهكم بأن الطالب ${studentName} لم يبدأ مشاهدة المحاضرة المقررة حتى الآن. نرجو تذكيره بمتابعة المحاضرة والواجب، وشكرًا لتعاونكم مع منصة Khaled Al-Bahrawi.`;
     return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
   };
 
@@ -535,9 +562,19 @@ export default function TeacherDashboard() {
                     <td className="px-4 py-4">{student.classLevel}</td>
                     <td className="px-4 py-4">{student.watched}</td>
                     <td className="px-4 py-4">
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${student.status === "شاهد المحاضرة" ? "bg-emerald-500/15 text-emerald-300" : "bg-amber-500/15 text-amber-300"}`}>
-                        {student.status}
-                      </span>
+                      {student.status === "لم يشاهد المحاضرة" ? (
+                        <a
+                          href={buildWhatsAppLink(student.parentPhone || "", student.name)}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex rounded-full border border-amber-300/40 bg-amber-500/15 px-3 py-1.5 text-xs font-black text-amber-200 transition hover:bg-amber-500/25"
+                          title="إرسال تنبيه لولي الأمر عبر واتساب"
+                        >
+                          لم يشاهد — إرسال واتساب
+                        </a>
+                      ) : (
+                        <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-semibold text-emerald-300">{student.status}</span>
+                      )}
                     </td>
                     <td className="px-4 py-4">
                       <a
@@ -910,7 +947,6 @@ export default function TeacherDashboard() {
                   <label className="mb-2 block text-sm text-slate-300">رفع ملف الفيديو</label>
                   <input
                     type="file"
-                    accept="video/*"
                     onChange={(e) => handleVideoSelection(e.target.files?.[0] ?? null)}
                     className="w-full rounded-2xl border border-dashed border-white/10 bg-slate-900 px-4 py-3 text-sm text-slate-300 file:mr-3 file:rounded-full file:border-0 file:bg-sky-500/15 file:px-3 file:py-1.5 file:text-sky-200"
                   />
@@ -930,6 +966,18 @@ export default function TeacherDashboard() {
               {lessonMessage ? (
                 <div className="rounded-2xl border border-sky-400/20 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
                   {lessonMessage}
+                </div>
+              ) : null}
+
+              {uploading && !editingLessonId ? (
+                <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-4">
+                  <div className="mb-2 flex items-center justify-between text-sm text-cyan-100">
+                    <span>جاري رفع المحاضرة، من فضلك لا تغلق الصفحة</span>
+                    <span className="font-black">{uploadProgress}%</span>
+                  </div>
+                  <div className="h-3 overflow-hidden rounded-full bg-slate-800">
+                    <div className="h-full rounded-full bg-gradient-to-r from-sky-400 to-cyan-200 transition-all" style={{ width: `${uploadProgress}%` }} />
+                  </div>
                 </div>
               ) : null}
 

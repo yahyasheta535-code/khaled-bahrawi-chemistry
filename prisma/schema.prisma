@@ -51,6 +51,7 @@ model User {
   results           AssignmentResult[]
   answers           StudentAnswer[]
   createdLessons    Lesson[]             @relation("LessonCreator")
+  lessonViews       LessonView[]
 
   @@map("platform_users")
 }
@@ -113,8 +114,25 @@ model Lesson {
 
   createdBy   User?        @relation("LessonCreator", fields: [teacherId], references: [id], onDelete: SetNull)
   assignments Assignment[]
+  views       LessonView[]
 
   @@map("lessons")
+}
+
+model LessonView {
+  id            String   @id @default(cuid())
+  userId        String
+  lessonId      String
+  startedAt     DateTime @default(now())
+  lastWatchedAt DateTime @updatedAt
+  progress      Int      @default(0)
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([lessonId])
+  @@map("lesson_views")
 }
 
 model Assignment {
