@@ -3,8 +3,8 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Khaled Al-Bahrawi | Chemistry Academy",
-  description: "منصة Khaled Al-Bahrawi لتعليم الكيمياء بالمحاضرات والواجبات والمتابعة.",
+  title: "Khaled Al-Bahrawi | افهم الكيمياء صح",
+  description: "منصة خالد البحراوي لشرح الكيمياء بطريقة واضحة، مع محاضرات مرتبة وواجبات ومتابعة للتقدم.",
 };
 
 export const dynamic = "force-dynamic";
