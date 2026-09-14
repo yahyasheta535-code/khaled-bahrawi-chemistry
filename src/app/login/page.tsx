@@ -65,6 +65,7 @@ export default function LoginPage() {
             <input
               value={form.username}
               onChange={(e) => setForm({ ...form, username: e.target.value })}
+              disabled={loading}
               autoComplete="username"
               className="w-full rounded-2xl border border-white/10 bg-[#1a2437] px-4 py-4 text-right text-lg text-white placeholder:text-slate-500 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30"
               placeholder="admin"
@@ -77,6 +78,7 @@ export default function LoginPage() {
               type="password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
+              disabled={loading}
               autoComplete="current-password"
               className="w-full rounded-2xl border border-white/10 bg-[#1a2437] px-4 py-4 text-right text-lg text-white placeholder:text-slate-500 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30"
               placeholder="••••••••"
@@ -86,10 +88,28 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-2xl bg-gradient-to-r from-sky-400 via-cyan-300 to-cyan-200 px-5 py-4 text-xl font-black text-slate-950 shadow-lg shadow-cyan-500/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+            aria-busy={loading}
+            className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-2xl bg-gradient-to-r from-sky-400 via-cyan-300 to-cyan-200 px-5 py-4 text-xl font-black text-slate-950 shadow-lg shadow-cyan-500/30 transition hover:brightness-110 disabled:cursor-wait disabled:opacity-80"
           >
-            {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+            {loading ? (
+              <>
+                <span className="absolute inset-x-0 bottom-0 h-1 animate-pulse bg-white/70" />
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-slate-950/30 border-t-slate-950" aria-hidden="true" />
+                <span>جاري التحقق من البيانات...</span>
+              </>
+            ) : "تسجيل الدخول"}
           </button>
+
+          {loading ? (
+            <div className="flex items-center justify-center gap-2 text-sm text-sky-200/80" role="status" aria-live="polite">
+              <span className="inline-flex gap-1" aria-hidden="true">
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300 [animation-delay:-0.2s]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300 [animation-delay:-0.1s]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300" />
+              </span>
+              لحظات ونفتح لك حسابك
+            </div>
+          ) : null}
 
           {message ? (
             <div className="rounded-2xl border border-sky-400/20 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
