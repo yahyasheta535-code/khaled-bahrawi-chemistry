@@ -39,7 +39,15 @@ export default function TeacherDashboard() {
     teacherName?: string;
     expiresAt?: string | null;
   }>>([]);
-  const [assignments, setAssignments] = useState<Array<{ id: string; title: string; classLevel: string; status: string; questionCount: number }>>([]);
+  const [assignments, setAssignments] = useState<Array<{
+    id: string;
+    title: string;
+    classLevel: string;
+    status: string;
+    questionCount: number;
+    description?: string | null;
+    questions: { text: string; optionA: string; optionB: string; optionC: string; optionD: string; correctAnswer: string; imageUrl?: string | null }[];
+  }>>([]);
   const [metrics, setMetrics] = useState({
     totalStudents: 0,
     totalLessons: 0,
@@ -49,8 +57,10 @@ export default function TeacherDashboard() {
   const [loading, setLoading] = useState(true);
   const [showLessonForm, setShowLessonForm] = useState(false);
   const [showAssignmentForm, setShowAssignmentForm] = useState(false);
+  const [editingAssignmentId, setEditingAssignmentId] = useState<string | null>(null);
   const [showAttendance, setShowAttendance] = useState(false);
   const [showTeacherSettings, setShowTeacherSettings] = useState(false);
+  const [showGrades, setShowGrades] = useState(false);
   const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -375,6 +385,34 @@ export default function TeacherDashboard() {
     }));
   }
 
+  function openNewAssignmentForm() {
+    setEditingAssignmentId(null);
+    setAssignmentMessage("");
+    setAssignmentForm({ title: "", description: "", classLevel: "THIRD_SECONDARY", status: "OPEN", questions: [{ text: "", optionA: "", optionB: "", optionC: "", optionD: "", correctAnswer: "A", imageUrl: "", imageFile: null }] });
+    setShowAssignmentForm(true);
+  }
+
+  function openEditAssignment(assignment: (typeof assignments)[number]) {
+    setEditingAssignmentId(assignment.id);
+    setAssignmentMessage("");
+    setAssignmentForm({
+      title: assignment.title,
+      description: assignment.description || "",
+      classLevel: assignment.classLevel,
+      status: assignment.status,
+      questions: assignment.questions.map((question) => ({ ...question, imageUrl: question.imageUrl || "", imageFile: null })),
+    });
+    setShowAssignmentForm(true);
+  }
+
+  async function handleDeleteAssignment(id: string) {
+    if (!window.confirm("هل تريد حذف هذا الواجب نهائياً؟")) return;
+    const response = await fetch("/api/assignments", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
+    const data = await response.json();
+    setAssignmentMessage(data.message || "تم تحديث قائمة الواجبات.");
+    if (response.ok) await loadDashboard();
+  }
+
   function updateQuestion(index: number, field: string, value: string) {
     setAssignmentForm((current) => ({
       ...current,
@@ -446,7 +484,7 @@ export default function TeacherDashboard() {
         imageUrl: question.imageFile ? await uploadQuestionImage(question.imageFile) : question.imageUrl || null,
       })));
       const response = await fetch("/api/assignments", {
-        method: "POST",
+        method: editingAssignmentId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: assignmentForm.title,
@@ -454,6 +492,7 @@ export default function TeacherDashboard() {
           classLevel: assignmentForm.classLevel,
           status: assignmentForm.status,
           questions,
+          ...(editingAssignmentId ? { id: editingAssignmentId } : {}),
         }),
       });
 
@@ -474,6 +513,7 @@ export default function TeacherDashboard() {
           { text: "", optionA: "", optionB: "", optionC: "", optionD: "", correctAnswer: "A", imageUrl: "", imageFile: null },
         ],
       });
+      setEditingAssignmentId(null);
       setShowAssignmentForm(false);
       await loadDashboard();
     } catch {
@@ -548,7 +588,7 @@ export default function TeacherDashboard() {
               + إنشاء محاضرة
             </button>
             <button
-              onClick={() => setShowAssignmentForm(true)}
+              onClick={openNewAssignmentForm}
               className="rounded-full bg-gradient-to-r from-violet-400 to-fuchsia-300 px-4 py-2 text-sm font-black text-slate-950"
             >
               + إنشاء واجب
@@ -646,6 +686,11 @@ export default function TeacherDashboard() {
         </section>
 
         <section className="mt-8 rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
+          <div className="mb-5 flex items-center justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-[0.25em] text-violet-300">Assignments</p><h2 className="mt-2 text-2xl font-bold">الواجبات المنشورة</h2></div><button type="button" onClick={openNewAssignmentForm} className="rounded-full bg-violet-500/15 px-4 py-2 text-sm font-bold text-violet-200">+ واجب جديد</button></div>
+          <div className="grid gap-3">{assignments.length ? assignments.map((assignment) => <div key={assignment.id} className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 md:flex-row md:items-center md:justify-between"><div><p className="font-black text-white">{assignment.title}</p><p className="mt-1 text-sm text-slate-400">{classOptions.find((item) => item.value === assignment.classLevel)?.label || assignment.classLevel} · {assignment.questionCount} سؤال</p></div><div className="flex gap-2"><button type="button" onClick={() => openEditAssignment(assignment)} className="rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1.5 text-xs font-bold text-sky-200">تعديل</button><button type="button" onClick={() => void handleDeleteAssignment(assignment.id)} className="rounded-full border border-rose-400/30 bg-rose-500/10 px-3 py-1.5 text-xs font-bold text-rose-200">حذف</button></div></div>) : <p className="rounded-2xl border border-dashed border-white/10 p-5 text-slate-400">لا توجد واجبات منشورة بعد.</p>}</div>
+        </section>
+
+        {showGrades ? <section className="mt-8 rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
           <div className="mb-5 flex items-center justify-between gap-4">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.25em] text-fuchsia-300">Grades</p>
@@ -672,7 +717,7 @@ export default function TeacherDashboard() {
               );
             })}
           </div>
-        </section>
+        </section> : null}
 
         <section className="mt-8 rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
           <div className="mb-5 flex items-center justify-between gap-4">
@@ -778,7 +823,7 @@ export default function TeacherDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-3 backdrop-blur-sm sm:p-4">
           <div className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-[2rem] border border-white/10 bg-slate-950 p-5 shadow-[0_30px_120px_rgba(15,23,42,0.8)]">
             <div className="mb-5 flex items-center justify-between">
-              <h3 className="text-2xl font-black text-white">إنشاء واجب</h3>
+              <h3 className="text-2xl font-black text-white">{editingAssignmentId ? "تعديل الواجب" : "إنشاء واجب"}</h3>
               <button
                 type="button"
                 onClick={() => setShowAssignmentForm(false)}
@@ -936,7 +981,7 @@ export default function TeacherDashboard() {
                 type="submit"
                 className="w-full rounded-full bg-gradient-to-r from-violet-400 to-fuchsia-300 px-5 py-3 text-base font-bold text-slate-950"
               >
-                حفظ الواجب
+                {editingAssignmentId ? "حفظ تعديلات الواجب" : "نشر الواجب"}
               </button>
             </form>
           </div>
@@ -1092,6 +1137,10 @@ export default function TeacherDashboard() {
                 ✕
               </button>
             </div>
+
+            <button type="button" onClick={() => { setShowGrades(true); setShowTeacherSettings(false); }} className="mb-4 flex w-full items-center justify-between rounded-2xl border border-fuchsia-400/30 bg-fuchsia-500/10 px-4 py-3 text-fuchsia-100">
+              <span>🏆</span><span className="font-bold">فتح درجات الطلاب</span><span>›</span>
+            </button>
 
             <form onSubmit={handleTeacherPasswordSave} className="space-y-4">
               <div>

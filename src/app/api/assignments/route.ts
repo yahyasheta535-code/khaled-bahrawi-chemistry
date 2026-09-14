@@ -97,3 +97,60 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, message: "حدث خطأ أثناء إنشاء الواجب." }, { status: 500 });
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const session = await getCurrentSession();
+    if (!session || !["ADMIN", "TEACHER"].includes(session.role)) {
+      return NextResponse.json({ success: false, message: "غير مسجل دخول" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const id = String(body.id || "").trim();
+    const parsed = assignmentSchema.safeParse(body);
+    if (!id || !parsed.success) {
+      return NextResponse.json({ success: false, message: "بيانات تعديل الواجب غير صحيحة." }, { status: 400 });
+    }
+
+    const existing = await prisma.assignment.findUnique({ where: { id } });
+    if (!existing) return NextResponse.json({ success: false, message: "الواجب غير موجود." }, { status: 404 });
+
+    const { title, description, classLevel, status, questions } = parsed.data;
+    const assignment = await prisma.$transaction(async (tx) => {
+      await tx.question.deleteMany({ where: { assignmentId: id } });
+      return tx.assignment.update({
+        where: { id },
+        data: {
+          title,
+          description,
+          classLevel,
+          status,
+          questions: { create: questions },
+        },
+        include: { questions: true },
+      });
+    });
+
+    return NextResponse.json({ success: true, message: "تم تعديل الواجب بنجاح.", assignment: { id: assignment.id, title: assignment.title } });
+  } catch (error) {
+    console.error("ASSIGNMENT_UPDATE_ERROR", error);
+    return NextResponse.json({ success: false, message: "حدث خطأ أثناء تعديل الواجب." }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const session = await getCurrentSession();
+    if (!session || !["ADMIN", "TEACHER"].includes(session.role)) {
+      return NextResponse.json({ success: false, message: "غير مسجل دخول" }, { status: 401 });
+    }
+    const body = await request.json().catch(() => ({}));
+    const id = String(body.id || "").trim();
+    if (!id) return NextResponse.json({ success: false, message: "معرف الواجب غير موجود." }, { status: 400 });
+    await prisma.assignment.delete({ where: { id } });
+    return NextResponse.json({ success: true, message: "تم حذف الواجب بنجاح." });
+  } catch (error) {
+    console.error("ASSIGNMENT_DELETE_ERROR", error);
+    return NextResponse.json({ success: false, message: "تعذر حذف الواجب. قد يكون غير موجود." }, { status: 404 });
+  }
+}

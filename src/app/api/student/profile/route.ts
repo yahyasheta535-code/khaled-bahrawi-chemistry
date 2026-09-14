@@ -98,6 +98,7 @@ export async function GET() {
             optionB: question.optionB,
             optionC: question.optionC,
             optionD: question.optionD,
+            imageUrl: question.imageUrl,
           }))
         : [],
       result: Array.isArray(assignment.results) && assignment.results[0]

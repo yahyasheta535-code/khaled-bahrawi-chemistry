@@ -113,7 +113,7 @@ export default function StudentDashboard() {
     newPassword: "",
     confirmPassword: "",
   });
-  const [activeSettingsSection, setActiveSettingsSection] = useState<"profile" | "theme" | "password">("profile");
+  const [activeSettingsSection, setActiveSettingsSection] = useState<"profile" | "theme" | "password" | "grades">("profile");
 
   const activeTheme = themePresets[(student.theme as keyof typeof themePresets) || "default"];
 
@@ -512,12 +512,13 @@ export default function StudentDashboard() {
               <div className="mb-4 grid grid-cols-2 gap-2">
                 {[
                   { key: "profile", label: "الحساب", icon: "👤" },
+                  { key: "grades", label: "درجاتي", icon: "🏆" },
                   { key: "password", label: "كلمة المرور", icon: "🔒" },
                 ].map((item) => (
                   <button
                     key={item.key}
                     type="button"
-                    onClick={() => setActiveSettingsSection(item.key as "profile" | "password")}
+                    onClick={() => setActiveSettingsSection(item.key as "profile" | "password" | "grades")}
                     className={`flex flex-col items-center gap-1 rounded-2xl border px-2 py-3 text-center transition ${
                       activeSettingsSection === item.key
                         ? "border-sky-400/50 bg-sky-500/10 text-sky-100"
@@ -543,6 +544,13 @@ export default function StudentDashboard() {
                       onChange={(e) => setSettingsForm({ ...settingsForm, studentPhone: e.target.value })}
                       className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-sky-400"
                     />
+                  </div>
+                ) : null}
+
+                {activeSettingsSection === "grades" ? (
+                  <div className="rounded-2xl border border-amber-400/20 bg-amber-500/5 p-4">
+                    <div className="mb-3 flex items-center gap-2 text-white"><span className="text-xl">🏆</span><h4 className="text-base font-bold">درجاتي</h4></div>
+                    <div className="space-y-2">{student.assignments.filter((assignment) => assignment.result).length ? student.assignments.filter((assignment) => assignment.result).map((assignment) => <div key={assignment.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-slate-900/70 px-3 py-3 text-sm"><span className="text-slate-200">{assignment.title}</span><strong className="text-emerald-300">{assignment.result?.score}/{assignment.result?.total} · {assignment.result?.percentage}%</strong></div>) : <p className="text-sm text-slate-400">لم تظهر درجاتك بعد. أكمل واجباً ليظهر هنا.</p>}</div>
                   </div>
                 ) : null}
 

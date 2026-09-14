@@ -132,6 +132,16 @@ export async function GET() {
         classLevel: assignment.classLevel,
         status: assignment.status,
         questionCount: assignment.questions.length,
+        description: assignment.description,
+        questions: assignment.questions.map((question) => ({
+          text: question.text,
+          optionA: question.optionA,
+          optionB: question.optionB,
+          optionC: question.optionC,
+          optionD: question.optionD,
+          correctAnswer: question.correctAnswer,
+          imageUrl: question.imageUrl,
+        })),
       })),
     });
   } catch (error) {
