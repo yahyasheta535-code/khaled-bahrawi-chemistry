@@ -81,6 +81,7 @@ export default function RegisterPage() {
             <input
               value={form.username}
               onChange={(e) => setForm({ ...form, username: e.target.value })}
+              disabled={loading}
               className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
               placeholder="مثل: ahmed2001"
             />
@@ -91,6 +92,7 @@ export default function RegisterPage() {
             <input
               value={form.displayName}
               onChange={(e) => setForm({ ...form, displayName: e.target.value })}
+              disabled={loading}
               className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
               placeholder="اسم الطالب بالكامل"
             />
@@ -102,6 +104,7 @@ export default function RegisterPage() {
               type="password"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
+              disabled={loading}
               className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
               placeholder="********"
             />
@@ -112,6 +115,7 @@ export default function RegisterPage() {
             <input
               value={form.nationalId}
               onChange={(e) => setForm({ ...form, nationalId: e.target.value })}
+              disabled={loading}
               className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
               placeholder="12345678901234"
             />
@@ -122,6 +126,7 @@ export default function RegisterPage() {
             <input
               value={form.studentPhone}
               onChange={(e) => setForm({ ...form, studentPhone: e.target.value })}
+              disabled={loading}
               className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
               placeholder="01000000000"
             />
@@ -132,6 +137,7 @@ export default function RegisterPage() {
             <input
               value={form.parentPhone}
               onChange={(e) => setForm({ ...form, parentPhone: e.target.value })}
+              disabled={loading}
               className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
               placeholder="01000000000"
             />
@@ -142,6 +148,7 @@ export default function RegisterPage() {
             <select
               value={form.classLevel}
               onChange={(e) => setForm({ ...form, classLevel: e.target.value })}
+              disabled={loading}
               className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
             >
               {classOptions.map((option) => (
@@ -174,10 +181,27 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-full bg-gradient-to-r from-sky-400 to-cyan-300 px-5 py-3.5 text-base font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-70"
+              aria-busy={loading}
+              className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-gradient-to-r from-sky-400 to-cyan-300 px-5 py-3.5 text-base font-black text-slate-950 transition hover:brightness-110 disabled:cursor-wait disabled:opacity-80"
             >
-              {loading ? "جاري إنشاء الحساب..." : "إنشاء الحساب"}
+              {loading ? (
+                <>
+                  <span className="absolute inset-x-0 bottom-0 h-1 animate-pulse bg-white/70" />
+                  <span className="h-5 w-5 animate-spin rounded-full border-2 border-slate-950/30 border-t-slate-950" aria-hidden="true" />
+                  <span>جاري تجهيز حسابك...</span>
+                </>
+              ) : "إنشاء الحساب"}
             </button>
+            {loading ? (
+              <div className="mt-3 flex items-center justify-center gap-2 text-sm text-sky-200/80" role="status" aria-live="polite">
+                <span className="inline-flex gap-1" aria-hidden="true">
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300 [animation-delay:-0.2s]" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300 [animation-delay:-0.1s]" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300" />
+                </span>
+                نحفظ بياناتك بأمان، لا تغلق الصفحة
+              </div>
+            ) : null}
           </div>
 
           {message ? (
