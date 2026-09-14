@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getCurrentSession } from "@/lib/session";
 import { storagePutStream } from "@/lib/storage";
+import { parseYouTubeVideoId } from "@/lib/video-provider";
 
 const lessonPayloadSchema = z.object({
   title: z.string().min(1).max(120),
@@ -70,6 +71,8 @@ export async function GET() {
           lessonNumber: lesson.lessonNumber,
           status: lesson.status,
           videoUrl: lesson.videoUrl,
+          videoProvider: lesson.videoProvider,
+          youtubeVideoId: lesson.youtubeVideoId,
           duration: lesson.duration,
           fileSize: lesson.fileSize,
           expiresAt: lesson.expiresAt ? lesson.expiresAt.toISOString() : null,
@@ -116,6 +119,12 @@ export async function POST(request: Request) {
     const uploadedVideoKey = isJson ? String(getValue("videoKey") || "") : "";
     const uploadedVideoMimeType = isJson ? String(getValue("videoMimeType") || "application/octet-stream") : "";
     const uploadedFileSize = isJson ? Number(getValue("fileSize") || 0) : 0;
+    const youtubeUrl = isJson ? String(getValue("youtubeUrl") || "").trim() : "";
+    const youtubeVideoId = youtubeUrl ? parseYouTubeVideoId(youtubeUrl) : null;
+
+    if (youtubeUrl && !youtubeVideoId) {
+      return NextResponse.json({ success: false, message: "رابط YouTube غير صالح، يرجى التأكد من الرابط." }, { status: 400 });
+    }
 
     const parsed = lessonPayloadSchema.safeParse({
       title,
@@ -131,8 +140,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: "بيانات المحاضرة غير صحيحة." }, { status: 400 });
     }
 
-    if (!(rawFile instanceof File) && !uploadedVideoUrl) {
-      return NextResponse.json({ success: false, message: "يجب رفع ملف فيديو صحيح." }, { status: 400 });
+    if (!youtubeVideoId && !(rawFile instanceof File) && !uploadedVideoUrl) {
+      return NextResponse.json({ success: false, message: "أضف رابط YouTube صحيح أو ارفع ملف فيديو." }, { status: 400 });
     }
 
     const classLevelValue = parsed.data.classLevel;
@@ -141,16 +150,18 @@ export async function POST(request: Request) {
       ((await prisma.lesson.count({ where: { classLevel: classLevelValue } })) + 1);
 
     const expiresAt = new Date(Date.now() + parsed.data.expiryHours * 60 * 60 * 1000);
-    const storage = uploadedVideoUrl
-      ? { url: uploadedVideoUrl, key: uploadedVideoKey }
-      : await storagePutStream(
-          `lessons/${session.userId}/${Date.now()}-${(rawFile as File).name || "lesson.mp4"}`,
-          (rawFile as File).stream(),
-          (rawFile as File).type || "video/mp4",
-          (rawFile as File).size,
-        );
-    const fileSize = uploadedVideoUrl ? uploadedFileSize : (rawFile as File).size;
-    const mimeType = uploadedVideoUrl ? uploadedVideoMimeType : (rawFile as File).type || "video/mp4";
+    const storage = youtubeVideoId
+      ? { url: "", key: "" }
+      : uploadedVideoUrl
+        ? { url: uploadedVideoUrl, key: uploadedVideoKey }
+        : await storagePutStream(
+            `lessons/${session.userId}/${Date.now()}-${(rawFile as File).name || "lesson.mp4"}`,
+            (rawFile as File).stream(),
+            (rawFile as File).type || "video/mp4",
+            (rawFile as File).size,
+          );
+    const fileSize = youtubeVideoId ? 0 : uploadedVideoUrl ? uploadedFileSize : (rawFile as File).size;
+    const mimeType = youtubeVideoId ? null : uploadedVideoUrl ? uploadedVideoMimeType : (rawFile as File).type || "video/mp4";
 
     const lesson = await prisma.lesson.create({
       data: {
@@ -160,6 +171,8 @@ export async function POST(request: Request) {
         lessonNumber,
         duration: parsed.data.duration,
         videoUrl: storage.url,
+        videoProvider: youtubeVideoId ? "YOUTUBE" : "STORAGE",
+        youtubeVideoId,
         videoData: null,
         videoMimeType: mimeType,
         fileSize: formatFileSize(fileSize),
@@ -180,6 +193,8 @@ export async function POST(request: Request) {
         classLevel: lesson.classLevel,
         lessonNumber: lesson.lessonNumber,
         videoUrl,
+        videoProvider: lesson.videoProvider,
+        youtubeVideoId: lesson.youtubeVideoId,
         status: lesson.status,
         expiresAt: lesson.expiresAt?.toISOString() ?? null,
       },
@@ -277,6 +292,19 @@ export async function PUT(request: Request) {
 
     const updateData: Record<string, string | number | Date | null> = {};
 
+    if (body.youtubeUrl !== undefined) {
+      const youtubeUrl = String(body.youtubeUrl || "").trim();
+      const youtubeVideoId = youtubeUrl ? parseYouTubeVideoId(youtubeUrl) : null;
+      if (youtubeUrl && !youtubeVideoId) {
+        return NextResponse.json({ success: false, message: "رابط YouTube غير صالح، يرجى التأكد من الرابط." }, { status: 400 });
+      }
+      updateData.videoUrl = "";
+      updateData.videoProvider = youtubeVideoId ? "YOUTUBE" : "STORAGE";
+      updateData.youtubeVideoId = youtubeVideoId;
+      updateData.videoMimeType = null;
+      updateData.fileSize = null;
+    }
+
     if (body.title) updateData.title = String(body.title).trim();
     if (body.description !== undefined) updateData.description = String(body.description).trim();
     if (body.classLevel) updateData.classLevel = String(body.classLevel);
@@ -302,6 +330,8 @@ export async function PUT(request: Request) {
         lessonNumber: updatedLesson.lessonNumber,
         duration: updatedLesson.duration,
         status: updatedLesson.status,
+        videoProvider: updatedLesson.videoProvider,
+        youtubeVideoId: updatedLesson.youtubeVideoId,
         expiresAt: updatedLesson.expiresAt?.toISOString() ?? null,
       },
     });

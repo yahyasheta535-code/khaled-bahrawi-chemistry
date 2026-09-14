@@ -27,7 +27,11 @@ export async function GET() {
     });
 
     const lessons = await prisma.lesson.findMany({
-      where: { classLevel: user.classLevel ?? "THIRD_SECONDARY" },
+      where: {
+        classLevel: user.classLevel ?? "THIRD_SECONDARY",
+        status: "PUBLISHED",
+        OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+      },
       orderBy: { lessonNumber: "asc" },
       take: 5,
     });
@@ -63,6 +67,8 @@ export async function GET() {
         description: lesson.description,
         status: lesson.status,
         videoUrl: lesson.videoUrl,
+        videoProvider: lesson.videoProvider,
+        youtubeVideoId: lesson.youtubeVideoId,
         duration: lesson.duration,
         fileSize: lesson.fileSize,
         progress,

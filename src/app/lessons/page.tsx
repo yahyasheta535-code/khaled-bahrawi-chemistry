@@ -81,13 +81,21 @@ export default function LessonsPage() {
                   <p className="mt-1 text-sm text-slate-300">{classLabels[lesson.classLevel] || lesson.classLevel}</p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex flex-col items-stretch gap-3 sm:items-end">
                   <span className={`rounded-full px-3 py-1 text-xs font-semibold ${lesson.status === "PUBLISHED" ? "bg-emerald-500/15 text-emerald-300" : "bg-amber-500/15 text-amber-300"}`}>
                     {lesson.status === "PUBLISHED" ? "منشورة" : "مسودة"}
                   </span>
-                  <a href={lesson.videoUrl} target="_blank" rel="noreferrer" className="rounded-full border border-sky-400/30 bg-sky-500/10 px-4 py-2 text-sm text-sky-200">
-                    مشاهدة
-                  </a>
+                  {lesson.videoProvider === "YOUTUBE" && lesson.youtubeVideoId ? (
+                    <div className="aspect-video w-full min-w-[250px] max-w-[340px] overflow-hidden rounded-xl border border-white/10 bg-black">
+                      <iframe
+                        title={`معاينة ${lesson.title}`}
+                        src={`https://www.youtube-nocookie.com/embed/${lesson.youtubeVideoId}?rel=0&modestbranding=1&playsinline=1`}
+                        className="h-full w-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+                  ) : <span className="rounded-full border border-sky-400/30 bg-sky-500/10 px-4 py-2 text-center text-sm text-sky-200">فيديو مخزن داخلياً</span>}
                 </div>
               </div>
             )) : (

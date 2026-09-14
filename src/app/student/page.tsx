@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import YouTubePlayer from "@/components/YouTubePlayer";
 
 type LessonSummary = {
   id: string;
@@ -10,6 +11,8 @@ type LessonSummary = {
   description: string;
   status: string;
   videoUrl: string;
+  videoProvider: "STORAGE" | "YOUTUBE";
+  youtubeVideoId: string | null;
   duration: string | null;
   progress: number;
 };
@@ -348,7 +351,12 @@ export default function StudentDashboard() {
 
                   <p className="mt-2 text-sm text-slate-300">{lesson.description}</p>
 
-                  {lesson.videoUrl ? (
+                  {lesson.videoProvider === "YOUTUBE" && lesson.youtubeVideoId ? (
+                    <div className="mt-4 space-y-3 rounded-2xl border border-sky-400/20 bg-sky-500/5 p-3">
+                      <p className="text-sm text-sky-200">مدة المحاضرة: {lesson.duration || "حسب الفيديو"}</p>
+                      <YouTubePlayer videoId={lesson.youtubeVideoId} onStarted={() => void markLessonStarted(lesson.id)} />
+                    </div>
+                  ) : lesson.videoUrl ? (
                     <div className="mt-4 space-y-3 rounded-2xl border border-sky-400/20 bg-sky-500/5 p-3">
                       <p className="text-sm text-sky-200">مدة المحاضرة: {lesson.duration || "غير محددة"}</p>
 

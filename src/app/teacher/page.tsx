@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { parseYouTubeVideoId } from "@/lib/video-provider";
 
 const classOptions = [
   { value: "THIRD_PREP", label: "الثالث الإعدادي" },
@@ -35,6 +36,8 @@ export default function TeacherDashboard() {
     classLevel: string;
     lessonNumber: number;
     status: string;
+    videoProvider: "STORAGE" | "YOUTUBE";
+    youtubeVideoId: string | null;
     duration: string | null;
     teacherName?: string;
     expiresAt?: string | null;
@@ -78,6 +81,8 @@ export default function TeacherDashboard() {
     duration: "00:00",
     status: "DRAFT",
     expiryHours: "24",
+    videoSource: "YOUTUBE" as "YOUTUBE" | "STORAGE",
+    youtubeUrl: "",
     video: null as File | null,
   });
   const [lessonMessage, setLessonMessage] = useState("");
@@ -192,12 +197,14 @@ export default function TeacherDashboard() {
       duration: "00:00",
       status: "DRAFT",
       expiryHours: "24",
+      videoSource: "YOUTUBE",
+      youtubeUrl: "",
       video: null,
     });
     setShowLessonForm(true);
   }
 
-  function startEditLesson(lesson: { id: string; title: string; classLevel: string; lessonNumber: number; status: string; duration: string | null; expiresAt?: string | null; }) {
+  function startEditLesson(lesson: { id: string; title: string; classLevel: string; lessonNumber: number; status: string; duration: string | null; videoProvider: "STORAGE" | "YOUTUBE"; youtubeVideoId: string | null; expiresAt?: string | null; }) {
     const expiryHours = lesson.expiresAt
       ? Math.max(1, Math.round((new Date(lesson.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60)))
       : 24;
@@ -212,13 +219,15 @@ export default function TeacherDashboard() {
       duration: lesson.duration ?? "00:00",
       status: lesson.status,
       expiryHours: String(expiryHours),
+      videoSource: lesson.videoProvider,
+      youtubeUrl: lesson.youtubeVideoId ? `https://www.youtube.com/watch?v=${lesson.youtubeVideoId}` : "",
       video: null,
     });
     setShowLessonForm(true);
   }
 
   function handleVideoSelection(file: File | null) {
-    setLessonForm((current) => ({ ...current, video: file, duration: "00:00" }));
+    setLessonForm((current) => ({ ...current, video: file, videoSource: "STORAGE", duration: "00:00" }));
 
     if (!file) {
       return;
@@ -271,6 +280,11 @@ export default function TeacherDashboard() {
       return;
     }
 
+    if (lessonForm.videoSource === "YOUTUBE" && !lessonForm.youtubeUrl.trim()) {
+      setLessonMessage("أضف رابط فيديو YouTube غير مدرج.");
+      return;
+    }
+
     setUploading(true);
     setUploadProgress(0);
 
@@ -288,6 +302,7 @@ export default function TeacherDashboard() {
             duration: lessonForm.duration,
             status: lessonForm.status,
             expiryHours: Number(lessonForm.expiryHours || 24),
+            ...(lessonForm.videoSource === "YOUTUBE" ? { youtubeUrl: lessonForm.youtubeUrl.trim() } : {}),
           }),
         });
 
@@ -300,10 +315,32 @@ export default function TeacherDashboard() {
 
         setLessonMessage(data.message || "تم تعديل المحاضرة بنجاح.");
       } else {
-        if (!lessonForm.video) {
-          setLessonMessage("يجب رفع ملف فيديو للحفظ.");
-          return;
-        }
+        if (lessonForm.videoSource === "YOUTUBE") {
+          const response = await fetch("/api/lessons", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title: lessonForm.title,
+              description: lessonForm.description || "",
+              classLevel: lessonForm.classLevel,
+              lessonNumber: Number(lessonForm.lessonNumber || 1),
+              duration: lessonForm.duration,
+              status: lessonForm.status,
+              expiryHours: Number(lessonForm.expiryHours || 24),
+              youtubeUrl: lessonForm.youtubeUrl.trim(),
+            }),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            setLessonMessage(data.message || "رابط YouTube غير صالح.");
+            return;
+          }
+          setLessonMessage(data.message || "تم حفظ المحاضرة بنجاح.");
+        } else {
+          if (!lessonForm.video) {
+            setLessonMessage("يجب رفع ملف فيديو للحفظ.");
+            return;
+          }
         const videoFile = lessonForm.video;
 
         const uploadUrlResponse = await fetch("/api/lessons/upload-url", {
@@ -353,6 +390,7 @@ export default function TeacherDashboard() {
         }
 
         setLessonMessage(data.message || "تم إنشاء المحاضرة بنجاح.");
+        }
       }
 
       setLessonForm({
@@ -363,6 +401,8 @@ export default function TeacherDashboard() {
         duration: "00:00",
         status: "DRAFT",
         expiryHours: "24",
+        videoSource: "YOUTUBE",
+        youtubeUrl: "",
         video: null,
       });
       setEditingLessonId(null);
@@ -1073,7 +1113,43 @@ export default function TeacherDashboard() {
                 </div>
               </div>
 
-              {!editingLessonId ? (
+              <div>
+                <label className="mb-2 block text-sm text-slate-300">مصدر الفيديو</label>
+                <select
+                  value={lessonForm.videoSource}
+                  disabled={Boolean(editingLessonId)}
+                  onChange={(e) => setLessonForm({ ...lessonForm, videoSource: e.target.value as "YOUTUBE" | "STORAGE", video: null })}
+                  className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400 disabled:opacity-60"
+                >
+                  <option value="YOUTUBE">YouTube — فيديو غير مدرج</option>
+                  <option value="STORAGE">رفع ملف إلى التخزين</option>
+                </select>
+              </div>
+
+              {lessonForm.videoSource === "YOUTUBE" ? (
+                <div className="rounded-2xl border border-red-400/20 bg-red-500/5 p-4">
+                  <label className="mb-2 block text-sm text-slate-300">رابط فيديو YouTube</label>
+                  <input
+                    value={lessonForm.youtubeUrl}
+                    onChange={(e) => setLessonForm({ ...lessonForm, youtubeUrl: e.target.value })}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    dir="ltr"
+                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-left text-white outline-none focus:border-red-400"
+                  />
+                  <p className="mt-2 text-xs text-slate-400">استخدم فيديو غير مدرج. سيتم حفظ المعرّف فقط وتشغيله داخل المنصة عبر المشغل الرسمي.</p>
+                  {parseYouTubeVideoId(lessonForm.youtubeUrl) ? (
+                    <div className="mt-4 aspect-video overflow-hidden rounded-xl border border-white/10 bg-black">
+                      <iframe
+                        title="معاينة فيديو المحاضرة"
+                        src={`https://www.youtube-nocookie.com/embed/${parseYouTubeVideoId(lessonForm.youtubeUrl)}?rel=0&modestbranding=1&playsinline=1`}
+                        className="h-full w-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+                  ) : lessonForm.youtubeUrl ? <p className="mt-2 text-xs text-rose-300">رابط YouTube غير صالح، يرجى التأكد من الرابط.</p> : null}
+                </div>
+              ) : !editingLessonId ? (
                 <div>
                   <label className="mb-2 block text-sm text-slate-300">رفع ملف الفيديو</label>
                   <input
@@ -1081,17 +1157,10 @@ export default function TeacherDashboard() {
                     onChange={(e) => handleVideoSelection(e.target.files?.[0] ?? null)}
                     className="w-full rounded-2xl border border-dashed border-white/10 bg-slate-900 px-4 py-3 text-sm text-slate-300 file:mr-3 file:rounded-full file:border-0 file:bg-sky-500/15 file:px-3 file:py-1.5 file:text-sky-200"
                   />
-                  {lessonForm.video ? (
-                    <div className="mt-3 space-y-1 text-xs text-sky-200">
-                      <p>تم اختيار: {lessonForm.video.name}</p>
-                      <p>المدة التلقائية: {lessonForm.duration}</p>
-                    </div>
-                  ) : null}
+                  {lessonForm.video ? <div className="mt-3 space-y-1 text-xs text-sky-200"><p>تم اختيار: {lessonForm.video.name}</p><p>المدة التلقائية: {lessonForm.duration}</p></div> : null}
                 </div>
               ) : (
-                <div className="rounded-2xl border border-sky-400/20 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
-                  تم تفعيل تعديل المحاضرة الحالية. لن تحتاج إلى إعادة رفع الفيديو.
-                </div>
+                <div className="rounded-2xl border border-sky-400/20 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">تم تفعيل تعديل المحاضرة الحالية. يمكنك تحديث رابط YouTube إذا كان هذا مصدرها.</div>
               )}
 
               {lessonMessage ? (

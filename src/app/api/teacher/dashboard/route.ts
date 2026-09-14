@@ -116,6 +116,8 @@ export async function GET() {
           classLevel: lesson.classLevel,
           lessonNumber: lesson.lessonNumber,
           status: lesson.status,
+          videoProvider: lesson.videoProvider,
+          youtubeVideoId: lesson.youtubeVideoId,
           duration: lesson.duration,
           expiresAt: lesson.expiresAt ? lesson.expiresAt.toISOString() : null,
           teacherName:

@@ -26,6 +26,11 @@ enum LessonStatus {
   ARCHIVED
 }
 
+enum VideoProvider {
+  STORAGE
+  YOUTUBE
+}
+
 enum AssignmentStatus {
   OPEN
   CLOSED
@@ -103,6 +108,8 @@ model Lesson {
   title        String
   description  String
   videoUrl     String
+  videoProvider VideoProvider @default(STORAGE)
+  youtubeVideoId String?
   videoData    Bytes?
   videoMimeType String?
   fileSize     String?
@@ -117,6 +124,8 @@ model Lesson {
   views       LessonView[]
 
   @@map("lessons")
+  @@index([classLevel, status, lessonNumber])
+  @@index([videoProvider, youtubeVideoId])
 }
 
 model LessonView {
