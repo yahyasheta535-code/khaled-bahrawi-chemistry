@@ -563,7 +563,7 @@ export default function TeacherDashboard() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.14),_transparent_25%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] text-white">
+      <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(74,222,128,0.14),_transparent_25%),linear-gradient(180deg,#071512_0%,#0b1f1a_100%)] text-white">
         <div className="rounded-3xl border border-white/10 bg-slate-950/70 px-8 py-5 text-lg font-semibold">
           جاري تحميل لوحة المدرس...
         </div>
@@ -606,11 +606,11 @@ export default function TeacherDashboard() {
   };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.14),_transparent_25%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] p-6 text-white">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(74,222,128,0.14),_transparent_25%),linear-gradient(180deg,#071512_0%,#0b1f1a_100%)] p-6 text-white">
       <div className="mx-auto max-w-7xl">
         <header className="mb-8 flex flex-col gap-4 rounded-[2rem] border border-white/10 bg-white/5 p-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Teacher Dashboard</p>
+            <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">Teacher Dashboard</p>
             <h1 className="mt-3 text-3xl font-black">لوحة المدرس</h1>
           </div>
 
@@ -623,13 +623,13 @@ export default function TeacherDashboard() {
             </button>
             <button
               onClick={openNewLessonForm}
-              className="rounded-full bg-gradient-to-r from-sky-400 to-cyan-300 px-4 py-2 text-sm font-black text-slate-950"
+              className="rounded-full bg-gradient-to-r from-emerald-400 to-teal-300 px-4 py-2 text-sm font-black text-slate-950"
             >
               + إنشاء محاضرة
             </button>
             <button
               onClick={openNewAssignmentForm}
-              className="rounded-full bg-gradient-to-r from-violet-400 to-fuchsia-300 px-4 py-2 text-sm font-black text-slate-950"
+              className="rounded-full bg-gradient-to-r from-purple-400 to-pink-300 px-4 py-2 text-sm font-black text-slate-950"
             >
               + إنشاء واجب
             </button>
@@ -663,7 +663,7 @@ export default function TeacherDashboard() {
         <section className="rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
           <div className="mb-5 flex items-center justify-between gap-4">
             <h2 className="text-2xl font-bold">متابعة مشاهدة المحاضرات</h2>
-            <button className="rounded-full bg-gradient-to-r from-sky-400 to-cyan-300 px-4 py-2 text-sm font-bold text-slate-950">
+            <button className="rounded-full bg-gradient-to-r from-emerald-400 to-teal-300 px-4 py-2 text-sm font-bold text-slate-950">
               المحاضرة الحالية
             </button>
           </div>
@@ -684,7 +684,7 @@ export default function TeacherDashboard() {
                 {students.length ? students.map((student) => (
                   <tr key={student.id} className="border-b border-white/10">
                     <td className="px-4 py-4">{student.name}</td>
-                    <td className="px-4 py-4 text-sky-300">{student.username}</td>
+                    <td className="px-4 py-4 text-emerald-300">{student.username}</td>
                     <td className="px-4 py-4">{student.classLevel}</td>
                     <td className="px-4 py-4">{student.watched}</td>
                     <td className="px-4 py-4">
@@ -707,7 +707,7 @@ export default function TeacherDashboard() {
                         href={buildWhatsAppLink(student.parentPhone || "", student.name)}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1.5 text-sky-200 hover:bg-sky-500/20"
+                        className="inline-flex rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1.5 text-emerald-200 hover:bg-emerald-500/20"
                       >
                         {student.parentPhone}
                       </a>
@@ -726,17 +726,17 @@ export default function TeacherDashboard() {
         </section>
 
         <section className="mt-8 rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
-          <div className="mb-5 flex items-center justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-[0.25em] text-violet-300">Assignments</p><h2 className="mt-2 text-2xl font-bold">الواجبات المنشورة</h2></div><button type="button" onClick={openNewAssignmentForm} className="rounded-full bg-violet-500/15 px-4 py-2 text-sm font-bold text-violet-200">+ واجب جديد</button></div>
-          <div className="grid gap-3">{assignments.length ? assignments.map((assignment) => <div key={assignment.id} className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 md:flex-row md:items-center md:justify-between"><div><p className="font-black text-white">{assignment.title}</p><p className="mt-1 text-sm text-slate-400">{classOptions.find((item) => item.value === assignment.classLevel)?.label || assignment.classLevel} · {assignment.questionCount} سؤال</p></div><div className="flex gap-2"><button type="button" onClick={() => openEditAssignment(assignment)} className="rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-1.5 text-xs font-bold text-sky-200">تعديل</button><button type="button" onClick={() => void handleDeleteAssignment(assignment.id)} className="rounded-full border border-rose-400/30 bg-rose-500/10 px-3 py-1.5 text-xs font-bold text-rose-200">حذف</button></div></div>) : <p className="rounded-2xl border border-dashed border-white/10 p-5 text-slate-400">لا توجد واجبات منشورة بعد.</p>}</div>
+          <div className="mb-5 flex items-center justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-[0.25em] text-purple-300">Assignments</p><h2 className="mt-2 text-2xl font-bold">الواجبات المنشورة</h2></div><button type="button" onClick={openNewAssignmentForm} className="rounded-full bg-purple-500/15 px-4 py-2 text-sm font-bold text-purple-200">+ واجب جديد</button></div>
+          <div className="grid gap-3">{assignments.length ? assignments.map((assignment) => <div key={assignment.id} className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 md:flex-row md:items-center md:justify-between"><div><p className="font-black text-white">{assignment.title}</p><p className="mt-1 text-sm text-slate-400">{classOptions.find((item) => item.value === assignment.classLevel)?.label || assignment.classLevel} · {assignment.questionCount} سؤال</p></div><div className="flex gap-2"><button type="button" onClick={() => openEditAssignment(assignment)} className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-200">تعديل</button><button type="button" onClick={() => void handleDeleteAssignment(assignment.id)} className="rounded-full border border-rose-400/30 bg-rose-500/10 px-3 py-1.5 text-xs font-bold text-rose-200">حذف</button></div></div>) : <p className="rounded-2xl border border-dashed border-white/10 p-5 text-slate-400">لا توجد واجبات منشورة بعد.</p>}</div>
         </section>
 
         {showGrades ? <section className="mt-8 rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
           <div className="mb-5 flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.25em] text-fuchsia-300">Grades</p>
+              <p className="text-sm font-bold uppercase tracking-[0.25em] text-pink-300">Grades</p>
               <h2 className="mt-2 text-2xl font-bold">درجات الطلاب</h2>
             </div>
-            <span className="rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-3 py-1 text-xs text-fuchsia-200">مصنف حسب الصف</span>
+            <span className="rounded-full border border-pink-400/30 bg-pink-500/10 px-3 py-1 text-xs text-pink-200">مصنف حسب الصف</span>
           </div>
           <div className="grid gap-4 lg:grid-cols-2">
             {classOptions.map((classOption) => {
@@ -764,7 +764,7 @@ export default function TeacherDashboard() {
             <h2 className="text-2xl font-bold">محاضرات المدرس</h2>
             <button
               onClick={openNewLessonForm}
-              className="rounded-full bg-gradient-to-r from-sky-400 to-cyan-300 px-4 py-2 text-sm font-black text-slate-950"
+              className="rounded-full bg-gradient-to-r from-emerald-400 to-teal-300 px-4 py-2 text-sm font-black text-slate-950"
             >
               + إضافة محاضرة
             </button>
@@ -793,7 +793,7 @@ export default function TeacherDashboard() {
                     <button
                       type="button"
                       onClick={() => startEditLesson(lesson)}
-                      className="rounded-full border border-sky-400/30 bg-sky-500/10 px-3 py-2 text-xs font-bold text-sky-100"
+                      className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-xs font-bold text-emerald-100"
                     >
                       تعديل
                     </button>
@@ -879,7 +879,7 @@ export default function TeacherDashboard() {
                 <input
                   value={assignmentForm.title}
                   onChange={(e) => setAssignmentForm({ ...assignmentForm, title: e.target.value })}
-                  className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-violet-400"
+                  className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-purple-400"
                 />
               </div>
 
@@ -888,7 +888,7 @@ export default function TeacherDashboard() {
                 <textarea
                   value={assignmentForm.description}
                   onChange={(e) => setAssignmentForm({ ...assignmentForm, description: e.target.value })}
-                  className="min-h-20 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-violet-400"
+                  className="min-h-20 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-purple-400"
                 />
               </div>
 
@@ -898,7 +898,7 @@ export default function TeacherDashboard() {
                   <select
                     value={assignmentForm.classLevel}
                     onChange={(e) => setAssignmentForm({ ...assignmentForm, classLevel: e.target.value })}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-violet-400"
+                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-purple-400"
                   >
                     {classOptions.map((option) => (
                       <option key={option.value} value={option.value}>{option.label}</option>
@@ -911,7 +911,7 @@ export default function TeacherDashboard() {
                   <select
                     value={assignmentForm.status}
                     onChange={(e) => setAssignmentForm({ ...assignmentForm, status: e.target.value })}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-violet-400"
+                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-purple-400"
                   >
                     <option value="OPEN">مفتوح</option>
                     <option value="CLOSED">مغلق</option>
@@ -944,16 +944,16 @@ export default function TeacherDashboard() {
                         value={question.text}
                         onChange={(e) => updateQuestion(index, "text", e.target.value)}
                         placeholder="نص السؤال"
-                        className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-violet-400"
+                        className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-purple-400"
                       />
 
-                      <div className="rounded-2xl border border-dashed border-violet-400/30 bg-violet-500/5 p-3">
-                        <label className="mb-2 block text-xs font-bold text-violet-200">صورة السؤال أو الرسم التوضيحي (اختياري)</label>
+                      <div className="rounded-2xl border border-dashed border-purple-400/30 bg-purple-500/5 p-3">
+                        <label className="mb-2 block text-xs font-bold text-purple-200">صورة السؤال أو الرسم التوضيحي (اختياري)</label>
                         <input
                           type="file"
                           accept="image/*"
                           onChange={(e) => updateQuestionImage(index, e.target.files?.[0] ?? null)}
-                          className="w-full text-xs text-slate-300 file:mr-3 file:rounded-full file:border-0 file:bg-violet-500/20 file:px-3 file:py-1.5 file:text-violet-100"
+                          className="w-full text-xs text-slate-300 file:mr-3 file:rounded-full file:border-0 file:bg-purple-500/20 file:px-3 file:py-1.5 file:text-purple-100"
                         />
                         {question.imageFile ? <p className="mt-2 text-xs text-emerald-300">تم اختيار: {question.imageFile.name}</p> : null}
                       </div>
@@ -963,25 +963,25 @@ export default function TeacherDashboard() {
                           value={question.optionA}
                           onChange={(e) => updateQuestion(index, "optionA", e.target.value)}
                           placeholder="الخيار A"
-                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-violet-400"
+                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-purple-400"
                         />
                         <input
                           value={question.optionB}
                           onChange={(e) => updateQuestion(index, "optionB", e.target.value)}
                           placeholder="الخيار B"
-                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-violet-400"
+                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-purple-400"
                         />
                         <input
                           value={question.optionC}
                           onChange={(e) => updateQuestion(index, "optionC", e.target.value)}
                           placeholder="الخيار C"
-                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-violet-400"
+                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-purple-400"
                         />
                         <input
                           value={question.optionD}
                           onChange={(e) => updateQuestion(index, "optionD", e.target.value)}
                           placeholder="الخيار D"
-                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-violet-400"
+                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-purple-400"
                         />
                       </div>
 
@@ -990,7 +990,7 @@ export default function TeacherDashboard() {
                         <select
                           value={question.correctAnswer}
                           onChange={(e) => updateQuestion(index, "correctAnswer", e.target.value)}
-                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-violet-400"
+                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-purple-400"
                         >
                           <option value="A">A</option>
                           <option value="B">B</option>
@@ -1006,20 +1006,20 @@ export default function TeacherDashboard() {
               <button
                 type="button"
                 onClick={addAssignmentQuestion}
-                className="rounded-full border border-violet-400/40 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-100"
+                className="rounded-full border border-purple-400/40 bg-purple-500/10 px-4 py-2 text-sm font-medium text-purple-100"
               >
                 + إضافة سؤال
               </button>
 
               {assignmentMessage ? (
-                <div className="rounded-2xl border border-violet-400/20 bg-violet-500/10 px-4 py-3 text-sm text-violet-100">
+                <div className="rounded-2xl border border-purple-400/20 bg-purple-500/10 px-4 py-3 text-sm text-purple-100">
                   {assignmentMessage}
                 </div>
               ) : null}
 
               <button
                 type="submit"
-                className="w-full rounded-full bg-gradient-to-r from-violet-400 to-fuchsia-300 px-5 py-3 text-base font-bold text-slate-950"
+                className="w-full rounded-full bg-gradient-to-r from-purple-400 to-pink-300 px-5 py-3 text-base font-bold text-slate-950"
               >
                 {editingAssignmentId ? "حفظ تعديلات الواجب" : "نشر الواجب"}
               </button>
@@ -1048,7 +1048,7 @@ export default function TeacherDashboard() {
                 <input
                   value={lessonForm.title}
                   onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
-                  className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+                  className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
                 />
               </div>
 
@@ -1057,7 +1057,7 @@ export default function TeacherDashboard() {
                 <textarea
                   value={lessonForm.description}
                   onChange={(e) => setLessonForm({ ...lessonForm, description: e.target.value })}
-                  className="min-h-24 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+                  className="min-h-24 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
                 />
               </div>
 
@@ -1067,7 +1067,7 @@ export default function TeacherDashboard() {
                   <select
                     value={lessonForm.classLevel}
                     onChange={(e) => setLessonForm({ ...lessonForm, classLevel: e.target.value })}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
                   >
                     {classOptions.map((option) => (
                       <option key={option.value} value={option.value}>{option.label}</option>
@@ -1082,7 +1082,7 @@ export default function TeacherDashboard() {
                     min={1}
                     value={lessonForm.lessonNumber}
                     onChange={(e) => setLessonForm({ ...lessonForm, lessonNumber: e.target.value })}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
                   />
                 </div>
               </div>
@@ -1093,7 +1093,7 @@ export default function TeacherDashboard() {
                   <select
                     value={lessonForm.status}
                     onChange={(e) => setLessonForm({ ...lessonForm, status: e.target.value })}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
                   >
                     <option value="DRAFT">مسودة</option>
                     <option value="PUBLISHED">منشورة</option>
@@ -1108,7 +1108,7 @@ export default function TeacherDashboard() {
                     max={720}
                     value={lessonForm.expiryHours}
                     onChange={(e) => setLessonForm({ ...lessonForm, expiryHours: e.target.value })}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
                   />
                 </div>
               </div>
@@ -1119,7 +1119,7 @@ export default function TeacherDashboard() {
                   value={lessonForm.videoSource}
                   disabled={Boolean(editingLessonId)}
                   onChange={(e) => setLessonForm({ ...lessonForm, videoSource: e.target.value as "YOUTUBE" | "STORAGE", video: null })}
-                  className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400 disabled:opacity-60"
+                  className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400 disabled:opacity-60"
                 >
                   <option value="YOUTUBE">YouTube — فيديو غير مدرج</option>
                   <option value="STORAGE">رفع ملف إلى التخزين</option>
@@ -1155,28 +1155,28 @@ export default function TeacherDashboard() {
                   <input
                     type="file"
                     onChange={(e) => handleVideoSelection(e.target.files?.[0] ?? null)}
-                    className="w-full rounded-2xl border border-dashed border-white/10 bg-slate-900 px-4 py-3 text-sm text-slate-300 file:mr-3 file:rounded-full file:border-0 file:bg-sky-500/15 file:px-3 file:py-1.5 file:text-sky-200"
+                    className="w-full rounded-2xl border border-dashed border-white/10 bg-slate-900 px-4 py-3 text-sm text-slate-300 file:mr-3 file:rounded-full file:border-0 file:bg-emerald-500/15 file:px-3 file:py-1.5 file:text-emerald-200"
                   />
-                  {lessonForm.video ? <div className="mt-3 space-y-1 text-xs text-sky-200"><p>تم اختيار: {lessonForm.video.name}</p><p>المدة التلقائية: {lessonForm.duration}</p></div> : null}
+                  {lessonForm.video ? <div className="mt-3 space-y-1 text-xs text-emerald-200"><p>تم اختيار: {lessonForm.video.name}</p><p>المدة التلقائية: {lessonForm.duration}</p></div> : null}
                 </div>
               ) : (
-                <div className="rounded-2xl border border-sky-400/20 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">تم تفعيل تعديل المحاضرة الحالية. يمكنك تحديث رابط YouTube إذا كان هذا مصدرها.</div>
+                <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">تم تفعيل تعديل المحاضرة الحالية. يمكنك تحديث رابط YouTube إذا كان هذا مصدرها.</div>
               )}
 
               {lessonMessage ? (
-                <div className="rounded-2xl border border-sky-400/20 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
+                <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
                   {lessonMessage}
                 </div>
               ) : null}
 
               {uploading && !editingLessonId ? (
-                <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-4">
-                  <div className="mb-2 flex items-center justify-between text-sm text-cyan-100">
+                <div className="rounded-2xl border border-teal-400/20 bg-teal-500/10 p-4">
+                  <div className="mb-2 flex items-center justify-between text-sm text-teal-100">
                     <span>جاري رفع المحاضرة، من فضلك لا تغلق الصفحة</span>
                     <span className="font-black">{uploadProgress}%</span>
                   </div>
                   <div className="h-3 overflow-hidden rounded-full bg-slate-800">
-                    <div className="h-full rounded-full bg-gradient-to-r from-sky-400 to-cyan-200 transition-all" style={{ width: `${uploadProgress}%` }} />
+                    <div className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-200 transition-all" style={{ width: `${uploadProgress}%` }} />
                   </div>
                 </div>
               ) : null}
@@ -1184,7 +1184,7 @@ export default function TeacherDashboard() {
               <button
                 type="submit"
                 disabled={uploading}
-                className="w-full rounded-full bg-gradient-to-r from-sky-400 to-cyan-300 px-5 py-3 text-base font-bold text-slate-950 shadow-lg shadow-sky-500/20 disabled:cursor-not-allowed disabled:opacity-70"
+                className="w-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-300 px-5 py-3 text-base font-bold text-slate-950 shadow-lg shadow-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {uploading ? "جارٍ حفظ المحاضرة..." : editingLessonId ? "تحديث المحاضرة" : "حفظ المحاضرة"}
               </button>
@@ -1207,7 +1207,7 @@ export default function TeacherDashboard() {
               </button>
             </div>
 
-            <button type="button" onClick={() => { setShowGrades(true); setShowTeacherSettings(false); }} className="mb-4 flex w-full items-center justify-between rounded-2xl border border-fuchsia-400/30 bg-fuchsia-500/10 px-4 py-3 text-fuchsia-100">
+            <button type="button" onClick={() => { setShowGrades(true); setShowTeacherSettings(false); }} className="mb-4 flex w-full items-center justify-between rounded-2xl border border-pink-400/30 bg-pink-500/10 px-4 py-3 text-pink-100">
               <span>🏆</span><span className="font-bold">فتح درجات الطلاب</span><span>›</span>
             </button>
 

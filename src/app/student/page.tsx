@@ -63,18 +63,18 @@ const initialProfile: StudentProfile = {
 
 const themePresets = {
   default: {
-    shell: "radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 25%), linear-gradient(180deg, #050816 0%, #0a1020 100%)",
-    accent: "from-sky-400 to-cyan-300",
-    soft: "bg-sky-500/10 text-sky-200 border-sky-400/30",
-    button: "bg-sky-500/10 border-sky-400/40 text-sky-100",
-    chip: "border-sky-400/50 bg-sky-500/10 text-sky-100",
+    shell: "radial-gradient(circle at top, rgba(74,222,128,0.18), transparent 25%), linear-gradient(180deg, #071512 0%, #0b1f1a 100%)",
+    accent: "from-emerald-400 to-teal-300",
+    soft: "bg-emerald-500/10 text-emerald-200 border-emerald-400/30",
+    button: "bg-emerald-500/10 border-emerald-400/40 text-emerald-100",
+    chip: "border-emerald-400/50 bg-emerald-500/10 text-emerald-100",
   },
-  violet: {
+  purple: {
     shell: "radial-gradient(circle at top, rgba(168,85,247,0.18), transparent 25%), linear-gradient(180deg, #0d0718 0%, #160d24 100%)",
-    accent: "from-violet-400 to-fuchsia-300",
-    soft: "bg-violet-500/10 text-violet-200 border-violet-400/30",
-    button: "bg-violet-500/10 border-violet-400/40 text-violet-100",
-    chip: "border-violet-400/50 bg-violet-500/10 text-violet-100",
+    accent: "from-purple-400 to-pink-300",
+    soft: "bg-purple-500/10 text-purple-200 border-purple-400/30",
+    button: "bg-purple-500/10 border-purple-400/40 text-purple-100",
+    chip: "border-purple-400/50 bg-purple-500/10 text-purple-100",
   },
   emerald: {
     shell: "radial-gradient(circle at top, rgba(34,197,94,0.18), transparent 25%), linear-gradient(180deg, #06140d 0%, #0b1d18 100%)",
@@ -262,7 +262,7 @@ export default function StudentDashboard() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.14),_transparent_25%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] text-white">
+      <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(74,222,128,0.14),_transparent_25%),linear-gradient(180deg,#071512_0%,#0b1f1a_100%)] text-white">
         <div className="rounded-3xl border border-white/10 bg-slate-950/70 px-8 py-5 text-lg font-semibold">
           جاري تحميل بيانات الطالب...
         </div>
@@ -275,7 +275,7 @@ export default function StudentDashboard() {
       <div className="mx-auto max-w-7xl">
         <header className="mb-8 flex flex-col gap-4 rounded-[2rem] border border-white/10 bg-white/5 p-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.35em] text-sky-300">Student Portal</p>
+            <p className="text-sm uppercase tracking-[0.35em] text-emerald-300">Student Portal</p>
             <h1 className="mt-3 text-3xl font-black">لوحة الطالب</h1>
           </div>
 
@@ -341,10 +341,10 @@ export default function StudentDashboard() {
                 <div key={lesson.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-sm text-sky-300">المحاضرة {lesson.lessonNumber}</p>
+                      <p className="text-sm text-emerald-300">المحاضرة {lesson.lessonNumber}</p>
                       <h3 className="mt-1 text-xl font-bold">{lesson.title}</h3>
                     </div>
-                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${lesson.status === "PUBLISHED" ? "bg-emerald-500/15 text-emerald-300" : "bg-sky-500/15 text-sky-300"}`}>
+                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${lesson.status === "PUBLISHED" ? "bg-emerald-500/15 text-emerald-300" : "bg-emerald-500/15 text-emerald-300"}`}>
                       {lesson.status === "PUBLISHED" ? "متاحة" : "مسودة"}
                     </span>
                   </div>
@@ -352,13 +352,13 @@ export default function StudentDashboard() {
                   <p className="mt-2 text-sm text-slate-300">{lesson.description}</p>
 
                   {lesson.videoProvider === "YOUTUBE" && lesson.youtubeVideoId ? (
-                    <div className="mt-4 space-y-3 rounded-2xl border border-sky-400/20 bg-sky-500/5 p-3">
-                      <p className="text-sm text-sky-200">مدة المحاضرة: {lesson.duration || "حسب الفيديو"}</p>
+                    <div className="mt-4 space-y-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/5 p-3">
+                      <p className="text-sm text-emerald-200">مدة المحاضرة: {lesson.duration || "حسب الفيديو"}</p>
                       <YouTubePlayer videoId={lesson.youtubeVideoId} onStarted={() => void markLessonStarted(lesson.id)} />
                     </div>
                   ) : lesson.videoUrl ? (
-                    <div className="mt-4 space-y-3 rounded-2xl border border-sky-400/20 bg-sky-500/5 p-3">
-                      <p className="text-sm text-sky-200">مدة المحاضرة: {lesson.duration || "غير محددة"}</p>
+                    <div className="mt-4 space-y-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/5 p-3">
+                      <p className="text-sm text-emerald-200">مدة المحاضرة: {lesson.duration || "غير محددة"}</p>
 
                       <video
                         controls
@@ -382,7 +382,7 @@ export default function StudentDashboard() {
                     </div>
                     <div className="h-2.5 overflow-hidden rounded-full bg-slate-800">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-sky-400 to-cyan-300"
+                        className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-300"
                         style={{ width: `${lesson.progress}%` }}
                       />
                     </div>
@@ -406,7 +406,7 @@ export default function StudentDashboard() {
                       <button
                         type="button"
                         onClick={() => openAssignment(item)}
-                        className="flex h-11 w-11 items-center justify-center rounded-full border border-sky-400/50 bg-sky-500/10 text-xl text-sky-200 shadow-lg shadow-sky-500/10 transition hover:scale-[1.02]"
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-emerald-400/50 bg-emerald-500/10 text-xl text-emerald-200 shadow-lg shadow-emerald-500/10 transition hover:scale-[1.02]"
                         aria-label={`فتح الواجب ${item.title}`}
                       >
                         👤
@@ -494,7 +494,7 @@ export default function StudentDashboard() {
                     })}
                   </fieldset>
                 ))}
-                {message ? <p className="rounded-xl bg-sky-500/10 p-3 text-sky-200">{message}</p> : null}
+                {message ? <p className="rounded-xl bg-emerald-500/10 p-3 text-emerald-200">{message}</p> : null}
                 <button type="submit" disabled={submittingAssignment} className={`w-full rounded-full bg-gradient-to-r ${activeTheme.accent} px-5 py-3 text-base font-bold text-slate-950 disabled:opacity-60`}>
                   {submittingAssignment ? "جارٍ إرسال الواجب..." : "إرسال الواجب"}
                 </button>
@@ -529,7 +529,7 @@ export default function StudentDashboard() {
                     onClick={() => setActiveSettingsSection(item.key as "profile" | "password" | "grades")}
                     className={`flex flex-col items-center gap-1 rounded-2xl border px-2 py-3 text-center transition ${
                       activeSettingsSection === item.key
-                        ? "border-sky-400/50 bg-sky-500/10 text-sky-100"
+                        ? "border-emerald-400/50 bg-emerald-500/10 text-emerald-100"
                         : "border-white/10 bg-slate-900/70 text-slate-300"
                     }`}
                   >
@@ -550,7 +550,7 @@ export default function StudentDashboard() {
                     <input
                       value={settingsForm.studentPhone}
                       onChange={(e) => setSettingsForm({ ...settingsForm, studentPhone: e.target.value })}
-                      className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+                      className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-emerald-400"
                     />
                   </div>
                 ) : null}
@@ -575,7 +575,7 @@ export default function StudentDashboard() {
                           type="password"
                           value={settingsForm.currentPassword}
                           onChange={(e) => setSettingsForm({ ...settingsForm, currentPassword: e.target.value })}
-                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-emerald-400"
                         />
                       </div>
 
@@ -585,7 +585,7 @@ export default function StudentDashboard() {
                           type="password"
                           value={settingsForm.newPassword}
                           onChange={(e) => setSettingsForm({ ...settingsForm, newPassword: e.target.value })}
-                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-emerald-400"
                         />
                       </div>
 
@@ -595,7 +595,7 @@ export default function StudentDashboard() {
                           type="password"
                           value={settingsForm.confirmPassword}
                           onChange={(e) => setSettingsForm({ ...settingsForm, confirmPassword: e.target.value })}
-                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-sky-400"
+                          className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-emerald-400"
                         />
                       </div>
                     </div>
@@ -603,12 +603,12 @@ export default function StudentDashboard() {
                 ) : null}
 
                 {message ? (
-                  <div className="rounded-2xl border border-sky-400/20 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
+                  <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
                     {message}
                   </div>
                 ) : null}
 
-                <button type="submit" className={`w-full rounded-full bg-gradient-to-r ${activeTheme.accent} px-5 py-3 text-base font-bold text-slate-950 shadow-lg shadow-sky-500/20`}>
+                <button type="submit" className={`w-full rounded-full bg-gradient-to-r ${activeTheme.accent} px-5 py-3 text-base font-bold text-slate-950 shadow-lg shadow-emerald-500/20`}>
                   حفظ الإعدادات
                 </button>
               </form>

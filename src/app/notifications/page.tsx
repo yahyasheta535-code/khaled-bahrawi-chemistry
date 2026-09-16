@@ -7,11 +7,11 @@ import BackButton from "@/components/BackButton";
 
 export default function NotificationsPage() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.14),_transparent_25%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] p-6 text-white">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(74,222,128,0.14),_transparent_25%),linear-gradient(180deg,#071512_0%,#0b1f1a_100%)] p-6 text-white">
       <div className="mx-auto max-w-7xl">
         <header className="mb-8 flex flex-col gap-4 rounded-[2rem] border border-white/10 bg-white/5 p-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Notifications</p>
+            <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">Notifications</p>
             <h1 className="mt-3 text-3xl font-black">تنبيهات أولياء الأمور</h1>
           </div>
 
@@ -44,7 +44,7 @@ export default function NotificationsPage() {
             {notifications.map((item) => (
               <div key={item.student} className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <p className="text-sm text-sky-300">{item.student}</p>
+                  <p className="text-sm text-emerald-300">{item.student}</p>
                   <h3 className="mt-1 text-xl font-bold">{item.status}</h3>
                   <p className="mt-1 text-sm text-slate-300">رقم ولي الأمر: {item.parent}</p>
                 </div>

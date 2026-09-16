@@ -68,7 +68,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.14),_transparent_30%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] p-6 text-white">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.14),_transparent_30%),linear-gradient(180deg,#071512_0%,#0b1f1a_100%)] p-6 text-white">
       <div className="mx-auto max-w-5xl rounded-[2rem] border border-white/10 bg-slate-950/80 p-6 shadow-[0_30px_120px_rgba(15,23,42,0.6)] md:p-8">
         <div className="mb-8">
           <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">{PLATFORM_BRAND.fullName}</p>
@@ -83,7 +83,7 @@ export default function RegisterPage() {
               value={form.username}
               onChange={(e) => setForm({ ...form, username: e.target.value })}
               disabled={loading}
-              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
               placeholder="مثل: ahmed2001"
             />
           </div>
@@ -94,7 +94,7 @@ export default function RegisterPage() {
               value={form.displayName}
               onChange={(e) => setForm({ ...form, displayName: e.target.value })}
               disabled={loading}
-              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
               placeholder="اسم الطالب بالكامل"
             />
           </div>
@@ -106,7 +106,7 @@ export default function RegisterPage() {
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               disabled={loading}
-              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
               placeholder="********"
             />
           </div>
@@ -117,7 +117,7 @@ export default function RegisterPage() {
               value={form.nationalId}
               onChange={(e) => setForm({ ...form, nationalId: e.target.value })}
               disabled={loading}
-              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
               placeholder="12345678901234"
             />
           </div>
@@ -128,7 +128,7 @@ export default function RegisterPage() {
               value={form.studentPhone}
               onChange={(e) => setForm({ ...form, studentPhone: e.target.value })}
               disabled={loading}
-              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
               placeholder="01000000000"
             />
           </div>
@@ -139,7 +139,7 @@ export default function RegisterPage() {
               value={form.parentPhone}
               onChange={(e) => setForm({ ...form, parentPhone: e.target.value })}
               disabled={loading}
-              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
               placeholder="01000000000"
             />
           </div>
@@ -150,7 +150,7 @@ export default function RegisterPage() {
               value={form.classLevel}
               onChange={(e) => setForm({ ...form, classLevel: e.target.value })}
               disabled={loading}
-              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-sky-400"
+              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none focus:border-emerald-400"
             >
               {classOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -183,7 +183,7 @@ export default function RegisterPage() {
               type="submit"
               disabled={loading}
               aria-busy={loading}
-              className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-gradient-to-r from-sky-400 to-cyan-300 px-5 py-3.5 text-base font-black text-slate-950 transition hover:brightness-110 disabled:cursor-wait disabled:opacity-80"
+              className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-gradient-to-r from-emerald-400 to-teal-300 px-5 py-3.5 text-base font-black text-slate-950 transition hover:brightness-110 disabled:cursor-wait disabled:opacity-80"
             >
               {loading ? (
                 <>
@@ -194,11 +194,11 @@ export default function RegisterPage() {
               ) : "إنشاء الحساب"}
             </button>
             {loading ? (
-              <div className="mt-3 flex items-center justify-center gap-2 text-sm text-sky-200/80" role="status" aria-live="polite">
+              <div className="mt-3 flex items-center justify-center gap-2 text-sm text-emerald-200/80" role="status" aria-live="polite">
                 <span className="inline-flex gap-1" aria-hidden="true">
-                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300 [animation-delay:-0.2s]" />
-                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300 [animation-delay:-0.1s]" />
-                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-300 [animation-delay:-0.2s]" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-300 [animation-delay:-0.1s]" />
+                  <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-300" />
                 </span>
                 نحفظ بياناتك بأمان، لا تغلق الصفحة
               </div>
@@ -206,12 +206,12 @@ export default function RegisterPage() {
           </div>
 
           {message ? (
-            <div className="md:col-span-2 rounded-2xl border border-sky-400/20 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
+            <div className="md:col-span-2 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
               {message}
             </div>
           ) : null}
           <div className="md:col-span-2 flex items-center justify-between gap-3 text-sm">
-            <a href="/login" className="text-sky-300 hover:text-sky-200">لديك حساب؟ تسجيل الدخول</a>
+            <a href="/login" className="text-emerald-300 hover:text-emerald-200">لديك حساب؟ تسجيل الدخول</a>
             <BackButton />
           </div>
         </form>

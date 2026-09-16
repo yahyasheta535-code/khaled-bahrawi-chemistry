@@ -52,8 +52,8 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.14),_transparent_30%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] p-6 text-white">
-      <div className="w-full max-w-[520px] rounded-[32px] border border-white/10 bg-[#111d2d]/90 p-6 shadow-[0_30px_120px_rgba(15,23,42,0.75)] backdrop-blur-md sm:p-8">
+    <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.14),_transparent_30%),linear-gradient(180deg,#071512_0%,#0b1f1a_100%)] p-6 text-white">
+      <div className="w-full max-w-[520px] rounded-[32px] border border-white/10 bg-[#102820]/90 p-6 shadow-[0_30px_120px_rgba(15,23,42,0.75)] backdrop-blur-md sm:p-8">
         <div className="mb-8 text-center">
           <p className="mb-3 text-sm font-semibold tracking-[0.25em] text-emerald-300">{PLATFORM_BRAND.fullName}</p>
           <h1 className="text-4xl font-black tracking-tight text-white">تسجيل دخول الطالب</h1>
@@ -68,7 +68,7 @@ export default function LoginPage() {
               onChange={(e) => setForm({ ...form, username: e.target.value })}
               disabled={loading}
               autoComplete="username"
-              className="w-full rounded-2xl border border-white/10 bg-[#1a2437] px-4 py-4 text-right text-lg text-white placeholder:text-slate-500 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30"
+              className="w-full rounded-2xl border border-white/10 bg-[#17352b] px-4 py-4 text-right text-lg text-white placeholder:text-slate-500 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/30"
               placeholder="admin"
             />
           </div>
@@ -81,7 +81,7 @@ export default function LoginPage() {
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               disabled={loading}
               autoComplete="current-password"
-              className="w-full rounded-2xl border border-white/10 bg-[#1a2437] px-4 py-4 text-right text-lg text-white placeholder:text-slate-500 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30"
+              className="w-full rounded-2xl border border-white/10 bg-[#17352b] px-4 py-4 text-right text-lg text-white placeholder:text-slate-500 outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/30"
               placeholder="••••••••"
             />
           </div>
@@ -90,7 +90,7 @@ export default function LoginPage() {
             type="submit"
             disabled={loading}
             aria-busy={loading}
-            className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-2xl bg-gradient-to-r from-sky-400 via-cyan-300 to-cyan-200 px-5 py-4 text-xl font-black text-slate-950 shadow-lg shadow-cyan-500/30 transition hover:brightness-110 disabled:cursor-wait disabled:opacity-80"
+            className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-300 to-teal-200 px-5 py-4 text-xl font-black text-slate-950 shadow-lg shadow-teal-500/30 transition hover:brightness-110 disabled:cursor-wait disabled:opacity-80"
           >
             {loading ? (
               <>
@@ -102,23 +102,23 @@ export default function LoginPage() {
           </button>
 
           {loading ? (
-            <div className="flex items-center justify-center gap-2 text-sm text-sky-200/80" role="status" aria-live="polite">
+            <div className="flex items-center justify-center gap-2 text-sm text-emerald-200/80" role="status" aria-live="polite">
               <span className="inline-flex gap-1" aria-hidden="true">
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300 [animation-delay:-0.2s]" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300 [animation-delay:-0.1s]" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-sky-300" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-300 [animation-delay:-0.2s]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-300 [animation-delay:-0.1s]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-300" />
               </span>
               لحظات ونفتح لك حسابك
             </div>
           ) : null}
 
           {message ? (
-            <div className="rounded-2xl border border-sky-400/20 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
+            <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
               {message}
             </div>
           ) : null}
           <div className="flex items-center justify-between gap-3 text-sm">
-            <a href="/register" className="text-sky-300 hover:text-sky-200">إنشاء حساب طالب</a>
+            <a href="/register" className="text-emerald-300 hover:text-emerald-200">إنشاء حساب طالب</a>
             <BackButton />
           </div>
         </form>

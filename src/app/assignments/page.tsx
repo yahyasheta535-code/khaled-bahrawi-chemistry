@@ -30,7 +30,7 @@ export default function AssignmentsPage() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.14),_transparent_25%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] text-white">
+      <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(74,222,128,0.14),_transparent_25%),linear-gradient(180deg,#071512_0%,#0b1f1a_100%)] text-white">
         <div className="rounded-3xl border border-white/10 bg-slate-950/70 px-8 py-5 text-lg font-semibold">
           جاري تحميل الواجبات...
         </div>
@@ -39,17 +39,17 @@ export default function AssignmentsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.14),_transparent_25%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] p-6 text-white">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(74,222,128,0.14),_transparent_25%),linear-gradient(180deg,#071512_0%,#0b1f1a_100%)] p-6 text-white">
       <div className="mx-auto max-w-7xl">
         <header className="mb-8 flex flex-col gap-4 rounded-[2rem] border border-white/10 bg-white/5 p-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Assignments</p>
+            <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">Assignments</p>
             <h1 className="mt-3 text-3xl font-black">إدارة الواجبات</h1>
           </div>
 
           <div className="flex flex-wrap gap-3">
             <BackButton fallback="/" />
-            <a href="/teacher" className="rounded-full bg-gradient-to-r from-violet-400 to-fuchsia-300 px-5 py-3 text-sm font-black text-slate-950">+ إنشاء واجب جديد</a>
+            <a href="/teacher" className="rounded-full bg-gradient-to-r from-purple-400 to-pink-300 px-5 py-3 text-sm font-black text-slate-950">+ إنشاء واجب جديد</a>
           </div>
         </header>
 
@@ -75,17 +75,17 @@ export default function AssignmentsPage() {
             {assignments.length ? assignments.map((assignment) => (
               <div key={assignment.id} className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <p className="text-sm text-violet-300">{classLabels[assignment.classLevel] || assignment.classLevel}</p>
+                  <p className="text-sm text-purple-300">{classLabels[assignment.classLevel] || assignment.classLevel}</p>
                   <h3 className="mt-1 text-xl font-bold">{assignment.title}</h3>
                   <p className="mt-1 text-sm text-slate-300">{assignment.description || "بدون وصف"}</p>
                   <p className="mt-1 text-sm text-slate-300">الأسئلة: {assignment.questionCount ?? assignment.questions?.length ?? 0}</p>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${assignment.status === "OPEN" ? "bg-emerald-500/15 text-emerald-300" : assignment.status === "GRADED" ? "bg-sky-500/15 text-sky-300" : "bg-amber-500/15 text-amber-300"}`}>
+                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${assignment.status === "OPEN" ? "bg-emerald-500/15 text-emerald-300" : assignment.status === "GRADED" ? "bg-emerald-500/15 text-emerald-300" : "bg-amber-500/15 text-amber-300"}`}>
                     {assignment.status === "OPEN" ? "مفتوح" : assignment.status === "GRADED" ? "مصحح" : "مغلق"}
                   </span>
-                  <button className="rounded-full border border-violet-400/30 bg-violet-500/10 px-4 py-2 text-sm text-violet-200">
+                  <button className="rounded-full border border-purple-400/30 bg-purple-500/10 px-4 py-2 text-sm text-purple-200">
                     تفاصيل
                   </button>
                 </div>
