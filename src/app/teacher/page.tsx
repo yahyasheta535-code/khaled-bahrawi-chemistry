@@ -595,13 +595,13 @@ export default function TeacherDashboard() {
 
   const buildWhatsAppLink = (phone: string, studentName: string) => {
     const digits = phone.replace(/\D/g, "").replace(/^0/, "966");
-    const text = `السلام عليكم ورحمة الله وبركاته، نود تنبيهكم بأن الطالب ${studentName} لم يبدأ مشاهدة المحاضرة المقررة حتى الآن. نرجو تذكيره بمتابعة المحاضرة والواجب، وشكرًا لتعاونكم مع منصة Khaled Al-Bahrawi.`;
+    const text = `السلام عليكم ورحمة الله وبركاته، نود تنبيهكم بأن الطالب ${studentName} لم يبدأ مشاهدة محاضرة الأحياء المقررة حتى الآن. نرجو تذكيره بمتابعة المحاضرة والواجب، وشكرًا لتعاونكم مع منصة Khaled Saafan Biology Academy.`;
     return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
   };
   const buildResultWhatsAppLink = (student: StudentRow) => {
     const digits = (student.parentPhone || "").replace(/\D/g, "").replace(/^0/, "966");
     const results = student.grades.map((grade) => `${grade.assignmentTitle}: ${grade.score}/${grade.total} (${grade.percentage}%)`).join("\n");
-    const text = `السلام عليكم ورحمة الله وبركاته،\nنتيجة الطالب ${student.name} في منصة Khaled Al-Bahrawi:\n${results}\nنشكر لكم المتابعة والدعم المستمر. بالتوفيق لابنكم.`;
+    const text = `السلام عليكم ورحمة الله وبركاته،\nنتيجة الطالب ${student.name} في منصة Khaled Saafan Biology Academy:\n${results}\nنشكر لكم المتابعة والدعم المستمر. بالتوفيق لابنكم.`;
     return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
   };
 

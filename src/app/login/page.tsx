@@ -54,7 +54,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.14),_transparent_30%),linear-gradient(180deg,#050816_0%,#0a1020_100%)] p-6 text-white">
       <div className="w-full max-w-[520px] rounded-[32px] border border-white/10 bg-[#111d2d]/90 p-6 shadow-[0_30px_120px_rgba(15,23,42,0.75)] backdrop-blur-md sm:p-8">
         <div className="mb-8 text-center">
-          <p className="mb-3 text-sm font-semibold tracking-[0.25em] text-sky-300">Khaled Al-Bahrawi Chemistry Academy</p>
+          <p className="mb-3 text-sm font-semibold tracking-[0.25em] text-emerald-300">Khaled Saafan Biology Academy</p>
           <h1 className="text-4xl font-black tracking-tight text-white">تسجيل دخول الطالب</h1>
           <p className="mt-3 text-sm text-slate-300">ادخل إلى محاضراتك وواجباتك ونتائجك في مكان واحد.</p>
         </div>
