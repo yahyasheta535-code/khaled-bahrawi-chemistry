@@ -362,7 +362,7 @@ export default function StudentDashboard() {
 
                       <video
                         controls
-                        controlsList="nodownload nofullscreen noremoteplayback"
+                        controlsList="nodownload noremoteplayback"
                         disablePictureInPicture
                         playsInline
                         muted={false}
