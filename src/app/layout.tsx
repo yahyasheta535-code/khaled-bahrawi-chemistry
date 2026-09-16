@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import { PLATFORM_BRAND } from "@/lib/branding";
 
 export const metadata: Metadata = {
-  title: "Khaled Saafan | افهم الأحياء صح",
-  description: "منصة خالد سعفان لشرح الأحياء بطريقة واضحة وبصرية، مع محاضرات مرتبة وواجبات ومتابعة للتقدم.",
+  title: `${PLATFORM_BRAND.englishName} | افهم ${PLATFORM_BRAND.subjectArabic} صح`,
+  description: `منصة ${PLATFORM_BRAND.englishName} لشرح ${PLATFORM_BRAND.subjectArabic} بطريقة واضحة وبصرية، مع محاضرات مرتبة وواجبات ومتابعة للتقدم.`,
 };
 
 export const dynamic = "force-dynamic";

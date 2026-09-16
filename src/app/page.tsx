@@ -1,3 +1,5 @@
+import { PLATFORM_BRAND } from "@/lib/branding";
+
 const features = [
   { number: "01", title: "افهم جسمك", text: "نحوّل التفاصيل الكثيرة إلى صورة واضحة تربط بين أجهزة الجسم ووظائفها." },
   { number: "02", title: "ذاكر برؤية", text: "رسومات توضيحية ومحاضرات مرتبة تساعدك تشوف المعلومة قبل ما تحفظها." },
@@ -16,8 +18,8 @@ export default function Home() {
           <a href="/" className="flex items-center gap-3" aria-label="الصفحة الرئيسية">
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#86e0b5]/35 bg-[#173c34] text-lg font-black text-[#b8f3d0] shadow-[0_8px_25px_rgba(0,0,0,.22)]">K</span>
             <span>
-              <span className="block text-[10px] font-bold uppercase tracking-[0.28em] text-[#a6e9c1]">Khaled Saafan</span>
-              <span className="block text-sm font-bold text-[#f4fcf6]">Biology Academy</span>
+              <span className="block text-[10px] font-bold uppercase tracking-[0.28em] text-[#a6e9c1]">{PLATFORM_BRAND.englishName}</span>
+              <span className="block text-sm font-bold text-[#f4fcf6]">{PLATFORM_BRAND.academyName}</span>
             </span>
           </a>
           <nav className="hidden items-center gap-8 text-sm text-[#b7cec1] md:flex">
@@ -56,7 +58,7 @@ export default function Home() {
         <section className="grid gap-5 border-t border-[#d6f1df]/10 py-16 md:grid-cols-[.8fr_1.2fr] md:items-center"><div><p className="text-sm font-bold text-[#a9edc5]">محتوى مناسب لمرحلتك</p><h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">اختار صفك وابدأ<br />من أول خلية</h2></div><div className="grid gap-3 sm:grid-cols-3">{classLevels.map((level, index) => <div key={level} className="rounded-2xl border border-[#d6f1df]/10 bg-[#0e2923]/75 p-5"><span className="text-xs text-[#8eaaa0]">الصف {index + 1}</span><p className="mt-3 font-black text-[#e7f6eb]">{level}</p><p className="mt-2 text-xs leading-6 text-[#a9c2b4]">محاضرات وواجبات تناسب منهجك</p></div>)}</div></section>
 
         <section id="contact" className="rounded-3xl border border-[#86e0b5]/20 bg-[#12342c]/80 p-8 text-center sm:p-14"><p className="text-sm font-bold tracking-[.25em] text-[#baf4d1]">Khaled Saafan Biology Academy</p><h2 className="mt-4 text-3xl font-black sm:text-5xl">جاهز تكتشف الأحياء؟</h2><p className="mx-auto mt-4 max-w-2xl leading-8 text-[#c7ddd0]">سجّل حسابك، اختار صفك، وابدأ أول محاضرة. كل درس هيفتح لك جزء جديد من الصورة.</p><a href="/register" className="mt-8 inline-block rounded-xl bg-[#a9edc5] px-8 py-4 font-black text-[#0a2720] hover:-translate-y-0.5 hover:bg-[#c4f7d7]">إنشاء حساب جديد</a></section>
-        <footer className="flex flex-col gap-3 py-8 text-sm text-[#8fa9a0] sm:flex-row sm:items-center sm:justify-between"><span>Khaled Saafan Biology Academy</span><span>افهم أكثر. اربط أفضل. نتيجة تفرحك.</span></footer>
+        <footer className="flex flex-col gap-3 py-8 text-sm text-[#8fa9a0] sm:flex-row sm:items-center sm:justify-between"><span>{PLATFORM_BRAND.fullName}</span><span>افهم أكثر. اربط أفضل. نتيجة تفرحك.</span></footer>
       </div>
     </main>
   );
