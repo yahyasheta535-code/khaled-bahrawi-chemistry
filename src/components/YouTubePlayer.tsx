@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 type YouTubePlayerProps = {
   videoId: string;
   onStarted?: () => void;
+  watermark?: string;
 };
 
 type YouTubeApi = {
@@ -19,7 +20,7 @@ declare global {
   }
 }
 
-export default function YouTubePlayer({ videoId, onStarted }: YouTubePlayerProps) {
+export default function YouTubePlayer({ videoId, onStarted, watermark }: YouTubePlayerProps) {
   const shellRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const startedRef = useRef(false);
@@ -97,8 +98,18 @@ export default function YouTubePlayer({ videoId, onStarted }: YouTubePlayerProps
   }
 
   return (
-    <div ref={shellRef} className="video-player-shell relative aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-black">
+    <div
+      ref={shellRef}
+      className="video-player-shell relative aspect-video w-full select-none overflow-hidden rounded-xl border border-white/10 bg-black"
+      onContextMenu={(event) => event.preventDefault()}
+      onDragStart={(event) => event.preventDefault()}
+    >
       <div ref={containerRef} className="h-full w-full" aria-label="مشغل المحاضرة" />
+      {watermark ? (
+        <div className="pointer-events-none absolute right-3 top-3 z-10 rounded-lg border border-white/15 bg-slate-950/45 px-2.5 py-1.5 text-[10px] font-bold text-white/70 backdrop-blur-sm">
+          {watermark} · للاستخدام الشخصي
+        </div>
+      ) : null}
       <button
         type="button"
         onClick={() => void toggleFullscreen()}

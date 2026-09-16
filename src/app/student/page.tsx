@@ -354,12 +354,13 @@ export default function StudentDashboard() {
                   {lesson.videoProvider === "YOUTUBE" && lesson.youtubeVideoId ? (
                     <div className="mt-4 space-y-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/5 p-3">
                       <p className="text-sm text-emerald-200">مدة المحاضرة: {lesson.duration || "حسب الفيديو"}</p>
-                      <YouTubePlayer videoId={lesson.youtubeVideoId} onStarted={() => void markLessonStarted(lesson.id)} />
+                      <YouTubePlayer videoId={lesson.youtubeVideoId} watermark={student.displayName} onStarted={() => void markLessonStarted(lesson.id)} />
                     </div>
                   ) : lesson.videoUrl ? (
                     <div className="mt-4 space-y-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/5 p-3">
                       <p className="text-sm text-emerald-200">مدة المحاضرة: {lesson.duration || "غير محددة"}</p>
 
+                      <div className="video-player-shell relative select-none overflow-hidden rounded-xl border border-white/10 bg-black" onContextMenu={(event) => event.preventDefault()} onDragStart={(event) => event.preventDefault()}>
                       <video
                         controls
                         controlsList="nodownload noremoteplayback"
@@ -367,11 +368,14 @@ export default function StudentDashboard() {
                         playsInline
                         muted={false}
                         preload="metadata"
-                        className="w-full rounded-xl border border-white/10 bg-black"
+                        className="w-full bg-black"
                         src={lesson.videoUrl}
                         onPlay={() => void markLessonStarted(lesson.id)}
                         onContextMenu={(event) => event.preventDefault()}
+                        draggable={false}
                       />
+                      <div className="pointer-events-none absolute right-3 top-3 rounded-lg border border-white/15 bg-slate-950/45 px-2.5 py-1.5 text-[10px] font-bold text-white/70 backdrop-blur-sm">{student.displayName} · للاستخدام الشخصي</div>
+                      </div>
                     </div>
                   ) : null}
 
